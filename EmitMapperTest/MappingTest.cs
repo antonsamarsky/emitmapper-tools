@@ -8,82 +8,97 @@ using NUnit.Framework;
 
 namespace EmitMapperTest
 {
-	[TestFixture]
-	public class MappingTest
-	{
-		private Stopwatch stopWatch = new Stopwatch();
+    [TestFixture]
+    public class MappingTest
+    {
+        private readonly Stopwatch stopWatch;
+        private Entity entity;
+        private Table table;
 
-		[SetUp]
-		public void SetUp()
-		{
-			stopWatch.Start();
-		}
+        public MappingTest()
+        {
+            this.stopWatch = new Stopwatch();
+            this.entity = new Entity();
+            this.table = new Table { Fields = new Dictionary<string, string>() };
+        }
 
-		[TearDown]
-		public void TearDown()
-		{
-			stopWatch.Stop();
-			Console.WriteLine(stopWatch.ElapsedMilliseconds);
-		}
+        [SetUp]
+        public void SetUp()
+        {
+            this.entity = new Entity
+            {
+                Id = Guid.NewGuid(),
+                Name = "Entity Name",
+                Number = 134567,
+                Price = 100.500m,
+                UserName = "Anton"
+            };
 
-		[Test]
-		public void EntityToTableMappingTest()
-		{
-			var entity = new Entity
-			{
-				Id = Guid.NewGuid(),
-				Name = "name",
-				Number = 12323,
-				Price = 100.500m
-			};
+            this.table = new Table
+            {
+                Fields = new Dictionary<string, string>
+			  {
+			    { "order_name", "Name" },
+			    { "order_id", "6F9619FF-8B86-D011-B42D-00CF4FC964FF" },
+			    { "order_number", "some" },
+                { "order_number_2", "09345" },
+			    { "order_price", "500.100" },
+                { "UserName", "Peter" }
+			  }
+            };
 
-			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Entity, Table>(new EntityToTableMappingConfigurator());
-			var result = mapper.Map(entity, new Table { Fields = new Dictionary<string, string>() });
+            stopWatch.Start();
+        }
 
-			Assert.IsNotNull(result);
-		}
+        [TearDown]
+        public void TearDown()
+        {
+            stopWatch.Stop();
+            Console.WriteLine(stopWatch.ElapsedMilliseconds);
+        }
 
-		[Test]
-		public void HandmadeEntityToTableMappingTest()
-		{
-			var entity = new Entity
-			{
-				Id = Guid.NewGuid(),
-				Name = "name",
-				Number = 12323,
-				Price = 100.500m
-			};
+        [Test]
+        public void EntityToTableMappingTest()
+        {
+            var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Entity, Table>(new EntityToTableMappingConfigurator());
+            this.table = mapper.Map(this.entity, this.table);
 
-			var table = new Table
-			{
-				Fields = new Dictionary<string, string>
+            this.AssertValues();
+        }
+
+        [Test]
+        public void ManualEntityToTableMappingTest()
+        {
+            this.table = new Table
+            {
+              Fields = new Dictionary<string, string>
 			  {
 			    { "order_name", entity.Name },
 			    { "order_id", entity.Id.ToString() },
 			    { "order_number", entity.Number.ToString() },
 			    { "order_price", entity.Price.ToString() }
 			  }
-			};
-		}
+            };
 
-		[Test]
-		public void TableToEntityMappingTest()
-		{
-			var table = new Table
-			{
-				Fields = new Dictionary<string, string>
-			  {
-			    { "order_name", "Order Name" },
-			    { "order_id", "6F9619FF-8B86-D011-B42D-00CF4FC964FF" },
-			    { "order_number", "102" },
-			    { "order_price", "100500" }
-			  }
-			};
+            this.AssertValues();
+        }
 
-			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Table, Entity>(new TableToEntityMappingConfigurator());
-			var result = mapper.Map(table);
+        [Test]
+        public void TableToEntityMappingTest()
+        {
+            var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Table, Entity>(new TableToEntityMappingConfigurator());
+            this.entity = mapper.Map(table);
 
-			Assert.IsNotNull(result);
-		}
-	}
+            this.AssertValues();
+        }
+
+        private void AssertValues()
+        {
+            Assert.AreEqual(this.entity.Id.ToString(), this.table.Fields["order_id"]);
+            Assert.AreEqual(this.entity.Number.ToString(), this.table.Fields["order_number"]);
+            Assert.AreEqual(this.entity.Number.ToString(), this.table.Fields["order_number_2"]);
+            Assert.AreEqual(this.entity.Name, this.table.Fields["order_name"]);
+            Assert.AreEqual(this.entity.Price.ToString(), this.table.Fields["order_price"]);
+        }
+    }
 }
