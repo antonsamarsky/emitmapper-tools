@@ -33,27 +33,32 @@ namespace DomainMappingConfiguration
                             {
                                 if (!(item is Table))
                                 {
-                                    return new ValueToWrite<object>();
+                                    return ValueToWrite<object>.Skip();
                                 }
 
                                 var dataMemberAttribute = Attribute.GetCustomAttributes(destinationMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
-                                string fieldName = dataMemberAttribute != null && !string.IsNullOrEmpty(dataMemberAttribute.FieldName) ? dataMemberAttribute.FieldName : destinationMember.Name;
+                                var fieldName = dataMemberAttribute != null && !string.IsNullOrEmpty(dataMemberAttribute.FieldName) ? dataMemberAttribute.FieldName : destinationMember.Name;
 
                                 // Map field to property value.
                                 var fieldValue = ((Table)item).Fields[fieldName];
                                 if (fieldValue == null)
                                 {
-                                    return new ValueToWrite<object>();
+                                    return ValueToWrite<object>.Skip();
                                 }
 
                                 var converter = TypeDescriptor.GetConverter(((PropertyInfo)destinationMember).PropertyType);
                                 if (converter == null)
                                 {
-                                    return new ValueToWrite<object>();
+                                    return ValueToWrite<object>.Skip();
+                                }
+
+                                if (!converter.CanConvertFrom(typeof(string)))
+                                {
+                                    return ValueToWrite<object>.Skip();
                                 }
 
                                 var destinationMemberValue = converter.ConvertFromString(fieldValue);
-                                return destinationMemberValue == null ? new ValueToWrite<object>() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
+                                return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
                             })
                      })).ToArray();
         }

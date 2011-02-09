@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -40,9 +41,18 @@ namespace DomainMappingConfiguration
 
                             var dataMemberAttributes = Attribute.GetCustomAttributes(sourceMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>();
 
-                            var fieldNames = from attribute in dataMemberAttributes
-                                             let name = attribute.FieldName
-                                             select string.IsNullOrEmpty(name) ? sourceMember.Name : attribute.FieldName;
+                            List<string> fieldNames;
+                            if (!dataMemberAttributes.Any())
+                            {
+                                fieldNames = new List<string> { sourceMember.Name };
+                            }
+                            else
+                            {
+                                fieldNames = (from attribute in dataMemberAttributes
+                                              let name = attribute.FieldName
+                                              select string.IsNullOrEmpty(name) ? sourceMember.Name : attribute.FieldName).ToList();
+                            }
+
 
                             // NOTE: Map the property value to the filed.
                             var converter = TypeDescriptor.GetConverter(((PropertyInfo)sourceMember).PropertyType);
@@ -51,10 +61,22 @@ namespace DomainMappingConfiguration
                                 return;
                             }
 
+                            if (!converter.CanConvertTo(typeof(string)))
+                            {
+                                return;
+                            }
+
                             var stringValue = converter.ConvertToString(value);
                             if (stringValue != null)
                             {
-                                fieldNames.ToList().ForEach(fieldName => table.Fields.Add(fieldName, stringValue));
+                                fieldNames.ForEach(fieldName =>
+                                    {
+                                        if (table.Fields.ContainsKey(fieldName))
+                                        {
+                                            table.Fields.Remove(fieldName);
+                                        }
+                                        table.Fields.Add(fieldName, stringValue);
+                                    });
                             }
                         }
                     })).ToArray();
