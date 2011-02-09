@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapperTest", "EmitMapperTest\EmitMapperTest.csproj", "{9CA34EA0-6B78-4714-B23F-01CF2738B829}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainMappingConfiguration", "DomainMappingConfiguration\DomainMappingConfiguration.csproj", "{7C2BF87D-5A27-4617-A9A0-5ED5B87581F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MappingDefinition", "MappingDefinition\MappingDefinition.csproj", "{57417399-91C6-415B-A164-6E7DF48270AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{2688C10A-2B8B-4539-8C90-690B7AC606D3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CA34EA0-6B78-4714-B23F-01CF2738B829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CA34EA0-6B78-4714-B23F-01CF2738B829}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CA34EA0-6B78-4714-B23F-01CF2738B829}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CA34EA0-6B78-4714-B23F-01CF2738B829}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C2BF87D-5A27-4617-A9A0-5ED5B87581F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C2BF87D-5A27-4617-A9A0-5ED5B87581F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C2BF87D-5A27-4617-A9A0-5ED5B87581F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C2BF87D-5A27-4617-A9A0-5ED5B87581F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57417399-91C6-415B-A164-6E7DF48270AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57417399-91C6-415B-A164-6E7DF48270AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57417399-91C6-415B-A164-6E7DF48270AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57417399-91C6-415B-A164-6E7DF48270AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2688C10A-2B8B-4539-8C90-690B7AC606D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2688C10A-2B8B-4539-8C90-690B7AC606D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2688C10A-2B8B-4539-8C90-690B7AC606D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2688C10A-2B8B-4539-8C90-690B7AC606D3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
