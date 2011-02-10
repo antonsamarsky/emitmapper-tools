@@ -58,6 +58,7 @@ namespace EmitMapperTest
 		}
 
 		[Test]
+		[Repeat(1000)]
 		public void EntityToEnityMappingTest()
 		{
 			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Entity, Entity2>();
@@ -69,6 +70,7 @@ namespace EmitMapperTest
 		}
 
 		[Test]
+		[Repeat(1000)]
 		public void ManualEntityToEnityMappingTest()
 		{
 			Entity2 entity2 = new Entity2
@@ -83,8 +85,8 @@ namespace EmitMapperTest
 			Assert.AreEqual(this.entity.Number, entity2.Number);
 		}
 
-
 		[Test]
+		[Repeat(1000)]
 		public void EntityToTableMappingTest()
 		{
 			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Entity, Table>(new EntityToTableMappingConfigurator());
@@ -94,6 +96,7 @@ namespace EmitMapperTest
 		}
 
 		[Test]
+		[Repeat(1000)]
 		public void ManualEntityToTableMappingTest()
 		{
 			this.table = new Table
@@ -113,6 +116,7 @@ namespace EmitMapperTest
 		}
 
 		[Test]
+		[Repeat(1000)]
 		public void TableToEntityMappingTest()
 		{
 			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<Table, Entity>(new TableToEntityMappingConfigurator());
@@ -122,6 +126,7 @@ namespace EmitMapperTest
 		}
 
 		[Test]
+		[Repeat(1000)]
 		public void ManualTableToEntityMappingTest()
 		{
 			this.entity = new Entity
