@@ -9,7 +9,7 @@ using EmitMapper.Utils;
 using MappingDefinitions;
 using MemberDescriptor = EmitMapper.MappingConfiguration.MemberDescriptor;
 
-namespace Mapping
+namespace Mapping.Configurators
 {
 	/// <summary>
 	/// The item configuration.
