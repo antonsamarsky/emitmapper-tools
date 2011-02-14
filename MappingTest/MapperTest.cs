@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Domain;
+using EmitMapper.MappingConfiguration;
 using Mapping;
+using Mapping.DomainConfigurators;
 using NUnit.Framework;
 
 namespace MappingTest
@@ -69,6 +71,7 @@ namespace MappingTest
 			};
 
 			this.stopWatch.Start();
+			Mapper.MapperCore.Initialize(new DomainMappingRegistrator());
 		}
 
 		/// <summary>
@@ -84,8 +87,7 @@ namespace MappingTest
 		/// <summary>
 		/// Entities to enity mapping test.
 		/// </summary>
-		[Test]
-		[Repeat(100)]
+		[Test, Repeat(100)]
 		public void EntityToEnityMappingTest()
 		{
 			Entity2 entity2 = Mapper.Map<Entity, Entity2>(this.entity);
@@ -96,10 +98,28 @@ namespace MappingTest
 		}
 
 		/// <summary>
-		/// Manuals the entity to enity mapping test.
+		/// Entities to enity variants mapping test.
+		/// http://emitmapper.codeplex.com/wikipage?title=Customization%20using%20default%20configurator&referringTitle=Documentation&ANCHOR#customization_overview
 		/// </summary>
 		[Test]
-		[Repeat(100)]
+		public void EntityToEnityVariantsMappingTest()
+		{
+			var mapConfig = new DefaultMapConfig().PostProcess<object>((value, state) =>
+																																	{
+																																		Console.WriteLine("Post processing: " + value.ToString());
+																																		return value;
+																																	});
+			Entity2 entity2 = Mapper.Map<Entity, Entity2>(this.entity, mapConfig);
+
+			Assert.AreEqual(this.entity.Id, entity2.Id);
+			Assert.AreEqual(this.entity.Name, entity2.Name);
+			Assert.AreEqual(this.entity.Number, entity2.Number);
+		}
+
+		/// <summary>
+		/// Manuals the entity to enity mapping test.
+		/// </summary>
+		[Test, Repeat(100)]
 		public void ManualEntityToEnityMappingTest()
 		{
 			Entity2 entity2 = new Entity2
@@ -117,8 +137,7 @@ namespace MappingTest
 		/// <summary>
 		/// Entities to table mapping test.
 		/// </summary>
-		[Test]
-		[Repeat(100)]
+		[Test, Repeat(100)]
 		public void EntityToTableMappingTest()
 		{
 			this.table = Mapper.Map(this.entity, this.table);
@@ -129,8 +148,7 @@ namespace MappingTest
 		/// <summary>
 		/// Manuals the entity to table mapping test.
 		/// </summary>
-		[Test]
-		[Repeat(100)]
+		[Test, Repeat(100)]
 		public void ManualEntityToTableMappingTest()
 		{
 			this.table = new Table
@@ -152,8 +170,7 @@ namespace MappingTest
 		/// <summary>
 		/// Tables to entity mapping test.
 		/// </summary>
-		[Test]
-		[Repeat(100)]
+		[Test, Repeat(100)]
 		public void TableToEntityMappingTest()
 		{
 			this.entity = Mapper.Map<Table, Entity>(this.table);
@@ -164,8 +181,7 @@ namespace MappingTest
 		/// <summary>
 		/// Manuals the table to entity mapping test.
 		/// </summary>
-		[Test]
-		[Repeat(100)]
+		[Test, Repeat(100)]
 		public void ManualTableToEntityMappingTest()
 		{
 			this.entity = new Entity

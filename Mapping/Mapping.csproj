@@ -38,11 +38,13 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configurators\EntityToTableMappingConfigurator.cs" />
+    <Compile Include="DomainConfigurators\DomainMappingRegistrator.cs" />
+    <Compile Include="DomainConfigurators\EntityToTableMappingConfigurator.cs" />
+    <Compile Include="IMappingTypeRegistrator.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MapperCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Configurators\TableToEntityMappingConfigurator.cs" />
+    <Compile Include="DomainConfigurators\TableToEntityMappingConfigurator.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Diagnostics\Diagnostics.csproj">
