@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MappingTest", "MappingTest\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Diagnostics", "Diagnostics\Diagnostics.csproj", "{924BBDAC-163C-4ECE-8D79-D96AAEF7DFCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainMappingConfiguration", "DomainMappingConfiguration\DomainMappingConfiguration.csproj", "{3FF1857A-8DA7-421B-978C-39C6A15E85BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{924BBDAC-163C-4ECE-8D79-D96AAEF7DFCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{924BBDAC-163C-4ECE-8D79-D96AAEF7DFCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{924BBDAC-163C-4ECE-8D79-D96AAEF7DFCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FF1857A-8DA7-421B-978C-39C6A15E85BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FF1857A-8DA7-421B-978C-39C6A15E85BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FF1857A-8DA7-421B-978C-39C6A15E85BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FF1857A-8DA7-421B-978C-39C6A15E85BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

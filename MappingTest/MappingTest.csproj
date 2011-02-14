@@ -46,6 +46,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DomainMappingConfiguration\DomainMappingConfiguration.csproj">
+      <Project>{3FF1857A-8DA7-421B-978C-39C6A15E85BF}</Project>
+      <Name>DomainMappingConfiguration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{99919BCA-1625-4FD3-B2D1-93728DCC74B7}</Project>
       <Name>Domain</Name>

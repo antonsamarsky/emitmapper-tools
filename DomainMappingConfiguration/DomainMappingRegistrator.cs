@@ -1,6 +1,7 @@
 using Domain;
+using Mapping;
 
-namespace Mapping.DomainConfigurators
+namespace DomainMappingConfiguration
 {
 	/// <summary>
 	/// The test domain mapping registrator.

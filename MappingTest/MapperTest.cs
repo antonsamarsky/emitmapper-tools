@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Domain;
+using DomainMappingConfiguration;
 using EmitMapper.MappingConfiguration;
 using Mapping;
-using Mapping.DomainConfigurators;
 using NUnit.Framework;
 
 namespace MappingTest
