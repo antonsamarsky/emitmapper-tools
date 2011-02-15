@@ -102,7 +102,7 @@ namespace MappingTest
 				Name = "Entity Name",
 				Number = 134567,
 				Price = 100.500m,
-				UserName = "Anton",
+				UserName = string.Empty,
 			};
 
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
