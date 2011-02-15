@@ -17,6 +17,11 @@ namespace DomainMappingConfiguration
 	/// </summary>
 	public class EntityToTableMappingConfigurator : DefaultMapConfig
 	{
+		public EntityToTableMappingConfigurator()
+		{
+			ConstructBy(() => new Table { Fields = new Dictionary<string, string>() });
+		}
+
 		/// <summary>
 		/// Gets the mapping operations.
 		/// </summary>
