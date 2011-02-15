@@ -168,6 +168,45 @@ namespace MappingTest
 			Assert.AreEqual(table.Fields["UserName"], entity.UserName);
 		}
 
+		[TestCase(10000)]
+		public void EnityToEntityMappingCollectionTest(int capacity)
+		{
+			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
+			{
+				Id = Guid.NewGuid(),
+				Number = i,
+				Name = "Name_" + i,
+				UserName = "UserName_" + i,
+				Price = (decimal)Math.Sqrt(i),
+			}).ToArray();
+
+			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+
+			// Cold mapping
+			Mapper.MapCollection<Entity, Entity2>(new List<Entity> {new Entity()});
+
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
+			var entities2 = Mapper.MapCollection<Entity, Entity>(entities);
+
+			var entities2Array = entities2.ToArray();
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
+
+			for (int i = 0; i < capacity; i++)
+			{
+				var entity2 = entities2Array[i];
+				var entity = entities[i];
+
+				Assert.AreEqual(entity.Id, entity2.Id);
+				Assert.AreEqual(entity.Name, entity2.Name);
+				Assert.AreEqual(entity.UserName, entity2.UserName);
+			}
+		}
+
 		/// <summary>
 		/// Tables to entity mapping collection test.
 		/// </summary>
@@ -185,7 +224,7 @@ namespace MappingTest
 					{ "order_price", Math.Sqrt(i).ToString() },
 					{ "UserName", "UserName_" + i }
 				}
-			});
+			}).ToArray();
 
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
@@ -199,14 +238,13 @@ namespace MappingTest
 			var entities = Mapper.MapCollection<Table, Entity>(tables);
 
 			var entitiesArray = entities.ToArray();
-			var tablesArray = tables.ToArray();
 
 			stopWatch.Stop();
 			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
 
 			for (int i = 0; i < capacity; i++)
 			{
-				var table = tablesArray[i];
+				var table = tables[i];
 				var entity = entitiesArray[i];
 
 				Assert.AreEqual(table.Fields["order_name"], entity.Name);
@@ -217,7 +255,7 @@ namespace MappingTest
 		}
 
 		[TestCase(10000)]
-		public void EntityTableToMappingCollectionTest(int capacity)
+		public void EntityToTableMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
 			{
@@ -226,7 +264,7 @@ namespace MappingTest
 				Name = "Name_" + i,
 				UserName = "UserName_" + i,
 				Price = (decimal)Math.Sqrt(i),
-			});
+			}).ToArray();
 
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
@@ -239,7 +277,6 @@ namespace MappingTest
 
 			var tables = Mapper.MapCollection<Entity, Table>(entities);
 
-			var entitiesArray = entities.ToArray();
 			var tablesArray = tables.ToArray();
 
 			stopWatch.Stop();
@@ -248,7 +285,7 @@ namespace MappingTest
 			for (int i = 0; i < capacity; i++)
 			{
 				var table = tablesArray[i];
-				var entity = entitiesArray[i];
+				var entity = entities[i];
 
 				Assert.AreEqual(entity.Name, table.Fields["order_name"]);
 				Assert.AreEqual(entity.Number.ToString(), table.Fields["order_number"]);
