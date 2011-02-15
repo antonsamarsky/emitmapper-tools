@@ -9,5 +9,7 @@ namespace Domain
 		public string Name { get; set; }
 
 		public int Number { get; set; }
+
+		public string UserName { get; set; }
 	}
 }

@@ -38,10 +38,10 @@ namespace Mapping
 		/// <summary>
 		/// Initializes the mapper.
 		/// </summary>
-		/// <param name="mappingTypeRegistrator">The mapping type registrator.</param>
-		public void Initialize(IMappingTypeRegistrator mappingTypeRegistrator)
+		/// <param name="mapperInitializator">The mapper initialization.</param>
+		public void Initialize(IMapperInitializator mapperInitializator)
 		{
-			mappingTypeRegistrator.ConfigureMapper(this);
+			mapperInitializator.ConfigureMapper(this);
 		}
 
 		/// <summary>

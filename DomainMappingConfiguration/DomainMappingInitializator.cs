@@ -6,7 +6,7 @@ namespace DomainMappingConfiguration
 	/// <summary>
 	/// The test domain mapping registrator.
 	/// </summary>
-	public class DomainMappingRegistrator : IMappingTypeRegistrator
+	public class DomainMappingInitializator : IMapperInitializator
 	{
 		/// <summary>
 		/// Configures the mapper.

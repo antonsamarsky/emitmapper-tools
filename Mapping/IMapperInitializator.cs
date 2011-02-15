@@ -3,7 +3,7 @@ namespace Mapping
 	/// <summary>
 	/// The mapping registrator. Use it to register mapping configs.
 	/// </summary>
-	public interface IMappingTypeRegistrator
+	public interface IMapperInitializator
 	{
 		/// <summary>
 		/// Configures the mapper.

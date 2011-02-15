@@ -38,7 +38,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMappingTypeRegistrator.cs" />
+    <Compile Include="IMapperInitializator.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="MapperCore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

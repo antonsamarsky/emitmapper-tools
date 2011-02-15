@@ -17,37 +17,86 @@ namespace MappingTest
 	public class MapperTest
 	{
 		/// <summary>
-		/// The stopwatch to test time of execution.
+		/// Entities to enity mapping test.
 		/// </summary>
-		private readonly Stopwatch stopWatch;
-
-		/// <summary>
-		/// The test entity to map.
-		/// </summary>
-		private Entity entity;
-
-		/// <summary>
-		/// The test table to test.
-		/// </summary>
-		private Table table;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="MapperTest"/> class.
-		/// </summary>
-		public MapperTest()
+		[Test]
+		public void EntityToEnityMappingTest()
 		{
-			this.stopWatch = new Stopwatch();
-			this.entity = new Entity();
-			this.table = new Table { Fields = new Dictionary<string, string>() };
+			var entity = new Entity
+			{
+				Id = Guid.NewGuid(),
+				Name = "Entity Name",
+				Number = 134567,
+				Price = 100.500m,
+				UserName = null,
+			};
+
+			// Cold mapping
+			Mapper.Map<Entity, Entity2>(new Entity());
+
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
+			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
+
+			Assert.AreEqual(entity.Id, entity2.Id);
+			Assert.AreEqual(entity.Name, entity2.Name);
+			Assert.AreEqual(entity.UserName, entity2.UserName);
 		}
 
 		/// <summary>
-		/// The sets up.
+		/// Entities to enity variants mapping test.
+		/// http://emitmapper.codeplex.com/wikipage?title=Customization%20using%20default%20configurator&referringTitle=Documentation&ANCHOR#customization_overview
 		/// </summary>
-		[SetUp]
-		public void SetUp()
+		[Test]
+		public void EntityToEnityVariantsMappingTest()
 		{
-			this.entity = new Entity
+			var entity = new Entity
+			{
+				Id = Guid.NewGuid(),
+				Name = "Entity Name",
+				Number = 134567,
+				Price = 100.500m,
+				UserName = null,
+			};
+
+			var mapConfig = new DefaultMapConfig().PostProcess<object>((value, state) =>
+			{
+				Console.WriteLine("Post processing: " + value.ToString());
+				return value;
+			});
+
+			Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
+
+			// Cold mapping
+			Mapper.Map<Entity, Entity2>(new Entity());
+
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
+			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
+
+			Assert.AreEqual(entity.Id, entity2.Id);
+			Assert.AreEqual(entity.Name, entity2.Name);
+			Assert.AreEqual(entity.Number, entity2.Number);
+			Assert.AreEqual(entity.UserName, entity2.UserName);
+		}
+
+		/// <summary>
+		/// Entities to table mapping test.
+		/// </summary>
+		[Test]
+		public void EntityToTableMappingTest()
+		{
+			var entity = new Entity
 			{
 				Id = Guid.NewGuid(),
 				Name = "Entity Name",
@@ -55,8 +104,36 @@ namespace MappingTest
 				Price = 100.500m,
 				UserName = "Anton",
 			};
+			
+			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
-			this.table = new Table
+			// Cold mapping
+			Mapper.Map(new Entity(), new Table { Fields = new Dictionary<string, string>() });
+
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
+			var table = Mapper.Map(entity, new Table { Fields = new Dictionary<string, string>() });
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
+
+			Assert.AreEqual(entity.Id.ToString(), table.Fields["order_id"]);
+			Assert.AreEqual(entity.Number.ToString(), table.Fields["order_number"]);
+			Assert.AreEqual(entity.Number.ToString(), table.Fields["order_number_2"]);
+			Assert.AreEqual(entity.Name, table.Fields["order_name"]);
+			Assert.AreEqual(entity.Price.ToString(), table.Fields["order_price"]);
+			Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
+		}
+
+		/// <summary>
+		/// Tables to entity mapping test.
+		/// </summary>
+		[Test]
+		public void TableToEntityMappingTest()
+		{
+			var table = new Table
 			{
 				Fields = new Dictionary<string, string>
 				{
@@ -69,143 +146,35 @@ namespace MappingTest
 				}
 			};
 
-			this.stopWatch.Start();
-			Mapper.MapperCore.Initialize(new DomainMappingRegistrator());
-		}
+			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
-		/// <summary>
-		/// The Tears down.
-		/// </summary>
-		[TearDown]
-		public void TearDown()
-		{
-			this.stopWatch.Stop();
-			Console.WriteLine(this.stopWatch.ElapsedMilliseconds);
-		}
+			// Cold mapping
+			Mapper.Map<Table, Entity>(new Table { Fields = new Dictionary<string, string>() });
 
-		/// <summary>
-		/// Entities to enity mapping test.
-		/// </summary>
-		[Test, Repeat(100)]
-		public void EntityToEnityMappingTest()
-		{
-			Entity2 entity2 = Mapper.Map<Entity, Entity2>(this.entity);
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
 
-			Assert.AreEqual(this.entity.Id, entity2.Id);
-			Assert.AreEqual(this.entity.Name, entity2.Name);
-			Assert.AreEqual(this.entity.Number, entity2.Number);
-		}
+			var entity = Mapper.Map<Table, Entity>(table);
 
-		/// <summary>
-		/// Entities to enity variants mapping test.
-		/// http://emitmapper.codeplex.com/wikipage?title=Customization%20using%20default%20configurator&referringTitle=Documentation&ANCHOR#customization_overview
-		/// </summary>
-		[Test, Repeat(100)]
-		public void EntityToEnityVariantsMappingTest()
-		{
-			var mapConfig = new DefaultMapConfig().PostProcess<object>((value, state) =>
-			{
-				Console.WriteLine("Post processing: " + value.ToString());
-				return value;
-			});
-			Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
 
-			Entity2 entity2 = Mapper.Map<Entity, Entity2>(this.entity);
-
-			Assert.AreEqual(this.entity.Id, entity2.Id);
-			Assert.AreEqual(this.entity.Name, entity2.Name);
-			Assert.AreEqual(this.entity.Number, entity2.Number);
-		}
-
-		/// <summary>
-		/// Manuals the entity to enity mapping test.
-		/// </summary>
-		[Test, Repeat(100)]
-		public void ManualEntityToEnityMappingTest()
-		{
-			Entity2 entity2 = new Entity2
-			{
-				Id = this.entity.Id,
-				Name = this.entity.Name,
-				Number = this.entity.Number
-			};
-
-			Assert.AreEqual(this.entity.Id, entity2.Id);
-			Assert.AreEqual(this.entity.Name, entity2.Name);
-			Assert.AreEqual(this.entity.Number, entity2.Number);
-		}
-
-		/// <summary>
-		/// Entities to table mapping test.
-		/// </summary>
-		[Test, Repeat(100)]
-		public void EntityToTableMappingTest()
-		{
-			this.table = Mapper.Map(this.entity, this.table);
-
-			this.AssertValues();
-		}
-
-		/// <summary>
-		/// Manuals the entity to table mapping test.
-		/// </summary>
-		[Test, Repeat(100)]
-		public void ManualEntityToTableMappingTest()
-		{
-			this.table = new Table
-			{
-				Fields = new Dictionary<string, string>
-				{
-					{ "order_name", this.entity.Name },
-					{ "order_id", this.entity.Id.ToString() },
-					{ "order_number", this.entity.Number.ToString() },
-					{ "order_number_2", this.entity.Number.ToString() },
-					{ "order_price", this.entity.Price.ToString() },
-					{ "UserName", this.entity.UserName }
-				}
-			};
-
-			this.AssertValues();
-		}
-
-		/// <summary>
-		/// Tables to entity mapping test.
-		/// </summary>
-		[Test, Repeat(100)]
-		public void TableToEntityMappingTest()
-		{
-			this.entity = Mapper.Map<Table, Entity>(this.table);
-
-			this.AssertValues();
-		}
-
-		/// <summary>
-		/// Manuals the table to entity mapping test.
-		/// </summary>
-		[Test, Repeat(100)]
-		public void ManualTableToEntityMappingTest()
-		{
-			this.entity = new Entity
-			{
-				Id = Guid.Parse(this.table.Fields["order_id"]),
-				Name = this.table.Fields["order_name"],
-				Number = int.Parse(this.table.Fields["order_number"]),
-				Price = decimal.Parse(this.table.Fields["order_price"]),
-				UserName = this.table.Fields["UserName"]
-			};
-
-			this.AssertValues();
+			Assert.AreEqual(table.Fields["order_id"], entity.Id.ToString());
+			Assert.AreEqual(table.Fields["order_number"], entity.Number.ToString());
+			Assert.AreEqual(table.Fields["order_number_2"], entity.Number.ToString());
+			Assert.AreEqual(table.Fields["order_name"], entity.Name);
+			Assert.AreEqual(table.Fields["order_price"], entity.Price.ToString());
+			Assert.AreEqual(table.Fields["UserName"], entity.UserName);
 		}
 
 		/// <summary>
 		/// Tables to entity mapping collection test.
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
-		[TestCase(100)]
+		[TestCase(10000)]
 		public void TableToEntityMappingCollectionTest(int capacity)
 		{
-			this.stopWatch.Start();
-
 			var tables = Enumerable.Range(0, capacity).Select(i => new Table
 			{
 				Fields = new Dictionary<string, string>
@@ -217,68 +186,31 @@ namespace MappingTest
 				}
 			});
 
+			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+
+			// Cold mapping
+			Mapper.MapCollection<Table, Entity>(new List<Table> { new Table { Fields = new Dictionary<string, string>() } });
+
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
 			var entities = Mapper.MapCollection<Table, Entity>(tables);
 
-			this.stopWatch.Stop();
-			Console.WriteLine("Map collection time: " + this.stopWatch.ElapsedMilliseconds);
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
 
-			var arrayExpected = tables.ToArray();
-			var arrayToAssert = entities.ToArray();
-			for (var i = 0; i <= entities.Count() - 1; i++)
+			var entitiesArray = entities.ToArray();
+			var tablesArray = tables.ToArray();
+			for (int i = 0; i < capacity; i++)
 			{
-				Assert.AreEqual(arrayExpected[i].Fields["order_name"], arrayToAssert[i].Name);
-				Assert.AreEqual(arrayExpected[i].Fields["order_number"], arrayToAssert[i].Number.ToString());
-				Assert.AreEqual(arrayExpected[i].Fields["order_price"], arrayToAssert[i].Price.ToString());
-				Assert.AreEqual(arrayExpected[i].Fields["UserName"], arrayToAssert[i].UserName);
+				var table = tablesArray[i];
+				var entity = entitiesArray[i];
+				Assert.AreEqual(table.Fields["order_name"], entity.Name);
+				Assert.AreEqual(table.Fields["order_number"], entity.Number.ToString());
+				Assert.AreEqual(table.Fields["order_price"], entity.Price.ToString());
+				Assert.AreEqual(table.Fields["UserName"], entity.UserName);
 			}
-		}
-
-		/*
-		/// <summary>
-		/// Entities to entity mapping collection test.
-		/// </summary>
-		/// <param name="capacity">The capacity.</param>
-		[TestCase(100)]
-		public void EntityToEntityMappingCollectionTest(int capacity)
-		{
-			this.stopWatch.Start();
-
-			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
-			{
-				Name = "Name_" + i,
-				Number = i,
-				Price = (decimal)Math.Sqrt(i),
-				UserName = "UserName_" + i,
-			});
-
-			var tables = Mapper.MapCollection<Entity, Table>(entities);
-
-			this.stopWatch.Stop();
-			Console.WriteLine("Map collection time: " + this.stopWatch.ElapsedMilliseconds);
-
-			var arrayExpected = tables.ToArray();
-			var arrayToAssert = entities.ToArray();
-			for (var i = 0; i <= entities.Count() - 1; i++)
-			{
-				Assert.AreEqual(arrayExpected[i].Fields["order_name"], arrayToAssert[i].Name);
-				Assert.AreEqual(arrayExpected[i].Fields["order_number"], arrayToAssert[i].Number.ToString());
-				Assert.AreEqual(arrayExpected[i].Fields["order_price"], arrayToAssert[i].Price.ToString());
-				Assert.AreEqual(arrayExpected[i].Fields["UserName"], arrayToAssert[i].UserName);
-			}
-		}
-		*/
-
-		/// <summary>
-		/// Asserts the values.
-		/// </summary>
-		private void AssertValues()
-		{
-			Assert.AreEqual(this.entity.Id.ToString(), this.table.Fields["order_id"]);
-			Assert.AreEqual(this.entity.Number.ToString(), this.table.Fields["order_number"]);
-			Assert.AreEqual(this.entity.Number.ToString(), this.table.Fields["order_number_2"]);
-			Assert.AreEqual(this.entity.Name, this.table.Fields["order_name"]);
-			Assert.AreEqual(this.entity.Price.ToString(), this.table.Fields["order_price"]);
-			Assert.AreEqual(this.entity.UserName, this.table.Fields["UserName"]);
 		}
 	}
 }
