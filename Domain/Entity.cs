@@ -19,6 +19,7 @@ namespace Domain
 		[DataMember(FieldName = "order_price")]
 		public decimal Price { get; set; }
 
+		[DataMember]
 		public string UserName { get; set; }
 	}
 }

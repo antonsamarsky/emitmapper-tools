@@ -192,10 +192,6 @@ namespace MappingTest
 			var entities2 = Mapper.MapCollection<Entity, Entity>(entities);
 
 			var entities2Array = entities2.ToArray();
-
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
-
 			for (int i = 0; i < capacity; i++)
 			{
 				var entity2 = entities2Array[i];
@@ -205,6 +201,9 @@ namespace MappingTest
 				Assert.AreEqual(entity.Name, entity2.Name);
 				Assert.AreEqual(entity.UserName, entity2.UserName);
 			}
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
 		}
 
 		/// <summary>

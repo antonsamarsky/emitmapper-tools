@@ -31,33 +31,30 @@ namespace DomainMappingConfiguration
 								Destination = new MemberDescriptor(destinationMember),
 								Getter = (ValueGetter<object>)((item, state) =>
 										{
-											if (!(item is Table))
+											var table = item as Table;
+
+											if (table == null)
 											{
 												return ValueToWrite<object>.Skip();
 											}
 
-											var dataMemberAttribute = Attribute.GetCustomAttributes(destinationMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
-											var fieldName = dataMemberAttribute != null && !string.IsNullOrEmpty(dataMemberAttribute.FieldName) ? dataMemberAttribute.FieldName : destinationMember.Name;
+											var attribute = Attribute.GetCustomAttributes(destinationMember, typeof(DataMemberAttribute), true).FirstOrDefault();
 
-											// Map field to property value.
-											if (!((Table)item).Fields.ContainsKey(fieldName))
+											if (attribute == null)
 											{
 												return ValueToWrite<object>.Skip();
 											}
 
-											var fieldValue = ((Table)item).Fields[fieldName];
-											if (fieldValue == null)
+											var fieldName = !string.IsNullOrEmpty(((DataMemberAttribute)attribute).FieldName) ? ((DataMemberAttribute)attribute).FieldName : destinationMember.Name;
+
+											string fieldValue;
+											if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
 											{
 												return ValueToWrite<object>.Skip();
 											}
 
 											var converter = TypeDescriptor.GetConverter(((PropertyInfo)destinationMember).PropertyType);
-											if (converter == null)
-											{
-												return ValueToWrite<object>.Skip();
-											}
-
-											if (!converter.CanConvertFrom(typeof(string)))
+											if (converter == null || !converter.CanConvertFrom(typeof(string)))
 											{
 												return ValueToWrite<object>.Skip();
 											}

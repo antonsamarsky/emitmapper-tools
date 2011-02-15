@@ -44,44 +44,32 @@ namespace DomainMappingConfiguration
 										return;
 									}
 
-									var dataMemberAttributes = Attribute.GetCustomAttributes(sourceMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>();
+									var attributes = Attribute.GetCustomAttributes(sourceMember, typeof(DataMemberAttribute), true);
 
-									List<string> fieldNames;
-									if (!dataMemberAttributes.Any())
+									if (!attributes.Any())
 									{
-										fieldNames = new List<string> { sourceMember.Name };
-									}
-									else
-									{
-										fieldNames = (from attribute in dataMemberAttributes
-																	let name = attribute.FieldName
-																	select string.IsNullOrEmpty(name) ? sourceMember.Name : attribute.FieldName).ToList();
+										return;
 									}
 
 									// NOTE: Map the property value to the filed.
 									var converter = TypeDescriptor.GetConverter(((PropertyInfo)sourceMember).PropertyType);
-									if (converter == null)
+									if (converter == null || !converter.CanConvertTo(typeof(string)))
 									{
 										return;
 									}
 
-									if (!converter.CanConvertTo(typeof(string)))
+									foreach (var attribute in attributes.Cast<DataMemberAttribute>())
 									{
-										return;
+										var fieldName = string.IsNullOrEmpty(attribute.FieldName) ? sourceMember.Name : attribute.FieldName;
+										if (table.Fields.ContainsKey(fieldName))
+										{
+											continue;
+										}
+
+										var stringValue = converter.ConvertToString(value);
+										table.Fields.Add(fieldName, stringValue ?? string.Empty);
 									}
 
-									var stringValue = converter.ConvertToString(value);
-									if (stringValue != null)
-									{
-										fieldNames.ForEach(fieldName =>
-												{
-													if (table.Fields.ContainsKey(fieldName))
-													{
-														table.Fields.Remove(fieldName);
-													}
-													table.Fields.Add(fieldName, stringValue);
-												});
-									}
 								}
 							})).ToArray();
 		}
