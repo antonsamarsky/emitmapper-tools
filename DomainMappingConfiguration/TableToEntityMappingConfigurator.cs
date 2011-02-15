@@ -25,11 +25,11 @@ namespace DomainMappingConfiguration
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
 			return FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(to)
-							 .Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
-							 .Select(destinationMember => (IMappingOperation)new DestWriteOperation
-							 {
-								 Destination = new MemberDescriptor(destinationMember),
-								 Getter = (ValueGetter<object>)((item, state) =>
+							.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
+							.Select(destinationMember => (IMappingOperation)new DestWriteOperation
+							{
+								Destination = new MemberDescriptor(destinationMember),
+								Getter = (ValueGetter<object>)((item, state) =>
 										{
 											if (!(item is Table))
 											{
@@ -65,7 +65,7 @@ namespace DomainMappingConfiguration
 											var destinationMemberValue = converter.ConvertFromString(fieldValue);
 											return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
 										})
-							 })).ToArray();
+							})).ToArray();
 		}
 	}
 }

@@ -53,7 +53,6 @@ namespace DomainMappingConfiguration
 																	select string.IsNullOrEmpty(name) ? sourceMember.Name : attribute.FieldName).ToList();
 									}
 
-
 									// NOTE: Map the property value to the filed.
 									var converter = TypeDescriptor.GetConverter(((PropertyInfo)sourceMember).PropertyType);
 									if (converter == null)

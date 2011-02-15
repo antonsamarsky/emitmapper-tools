@@ -11,10 +11,21 @@ namespace Mapping
 	/// </summary>
 	public class MapperCore
 	{
+		private static readonly IMappingConfigurator DefaultConfigurator;
+
 		/// <summary>
 		/// The list of configurations.
 		/// </summary>
-		private static readonly List<Tuple<Type, Type, IMappingConfigurator>> MappingConfigurators = new List<Tuple<Type, Type, IMappingConfigurator>>();
+		private static readonly List<Tuple<Type, Type, IMappingConfigurator>> MappingConfigurators;
+
+		/// <summary>
+		/// Initializes the <see cref="MapperCore"/> class.
+		/// </summary>
+		static MapperCore()
+		{
+			DefaultConfigurator = new DefaultMapConfig();
+			MappingConfigurators = new List<Tuple<Type, Type, IMappingConfigurator>>();
+		}
 
 		/// <summary>
 		/// Gets the configurators.
@@ -39,24 +50,9 @@ namespace Mapping
 		/// <typeparam name="TFrom">The type of from.</typeparam>
 		/// <typeparam name="TTo">The type of to.</typeparam>
 		/// <param name="configurator">The configurator.</param>
-		public virtual void AddMappingConfigurator<TFrom, TTo>(IMappingConfigurator configurator)
+		public virtual void AddMappingConfiguration<TFrom, TTo>(IMappingConfigurator configurator)
 		{
 			AddMappingConfigurator(typeof(TFrom), typeof(TTo), configurator);
-		}
-
-		/// <summary>
-		/// Adds the mapping configurator.
-		/// </summary>
-		/// <param name="from">The type from.</param>
-		/// <param name="to">The type to.</param>
-		/// <param name="configurator">The configurator.</param>
-		public virtual void AddMappingConfigurator(Type from, Type to, IMappingConfigurator configurator)
-		{
-			Assert.ArgumentNotNull(configurator, "configurator");
-			Assert.ArgumentNotNull(from, "from");
-			Assert.ArgumentNotNull(to, "to");
-
-			MappingConfigurators.Add(new Tuple<Type, Type, IMappingConfigurator>(from, to, configurator));
 		}
 
 		/// <summary>
@@ -79,25 +75,6 @@ namespace Mapping
 		/// <typeparam name="TFrom">The type of from.</typeparam>
 		/// <typeparam name="TTo">The type of to.</typeparam>
 		/// <param name="from">The object from.</param>
-		/// <param name="mappingConfigurator">The mapping configurator.</param>
-		/// <returns>
-		/// The mapped object.
-		/// </returns>
-		public virtual TTo Map<TFrom, TTo>(TFrom @from, IMappingConfigurator mappingConfigurator)
-		{
-			Assert.ArgumentNotNull(@from, "@from");
-			Assert.ArgumentNotNull(mappingConfigurator, "@mappingConfigurator");
-
-			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(mappingConfigurator);
-			return mapper.Map(@from);
-		}
-
-		/// <summary>
-		/// Maps the specified from.
-		/// </summary>
-		/// <typeparam name="TFrom">The type of from.</typeparam>
-		/// <typeparam name="TTo">The type of to.</typeparam>
-		/// <param name="from">The object from.</param>
 		/// <param name="to">The destination object.</param>
 		/// <returns>
 		/// The mapped object.
@@ -105,27 +82,6 @@ namespace Mapping
 		public virtual TTo Map<TFrom, TTo>(TFrom @from, TTo @to)
 		{
 			return this.Map(@from, @to, this.GetConfigurator<TFrom, TTo>());
-		}
-
-		/// <summary>
-		/// Maps the specified from.
-		/// </summary>
-		/// <typeparam name="TFrom">The type of from.</typeparam>
-		/// <typeparam name="TTo">The type of to.</typeparam>
-		/// <param name="from">The object from.</param>
-		/// <param name="to">The destination object.</param>
-		/// <param name="mappingConfigurator"></param>
-		/// <returns>
-		/// The mapped object.
-		/// </returns>
-		public virtual TTo Map<TFrom, TTo>(TFrom @from, TTo @to, IMappingConfigurator mappingConfigurator)
-		{
-			Assert.ArgumentNotNull(@from, "@from");
-			Assert.ArgumentNotNull(@to, "@to");
-			Assert.ArgumentNotNull(mappingConfigurator, "@mappingConfigurator");
-
-			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(mappingConfigurator);
-			return mapper.Map(@from, @to);
 		}
 
 		/// <summary>
@@ -150,7 +106,7 @@ namespace Mapping
 		/// <returns>
 		/// The output mapped collection.
 		/// </returns>
-		public virtual IEnumerable<TTo> MapCollection<TFrom, TTo>(IEnumerable<TFrom> @from, IMappingConfigurator mappingConfigurator)
+		protected virtual IEnumerable<TTo> MapCollection<TFrom, TTo>(IEnumerable<TFrom> @from, IMappingConfigurator mappingConfigurator)
 		{
 			Assert.ArgumentNotNullOrEmpty(@from, "@from");
 			Assert.ArgumentNotNull(mappingConfigurator, "@mappingConfigurator");
@@ -160,19 +116,74 @@ namespace Mapping
 		}
 
 		/// <summary>
+		/// Maps the specified from.
+		/// </summary>
+		/// <typeparam name="TFrom">The type of from.</typeparam>
+		/// <typeparam name="TTo">The type of to.</typeparam>
+		/// <param name="typeFrom">The type from.</param>
+		/// <param name="mappingConfigurator">The mapping configurator.</param>
+		/// <returns>
+		/// The mapped object.
+		/// </returns>
+		protected virtual TTo Map<TFrom, TTo>(TFrom typeFrom, IMappingConfigurator mappingConfigurator)
+		{
+			Assert.ArgumentNotNull(typeFrom, "typeFrom");
+			Assert.ArgumentNotNull(mappingConfigurator, "@mappingConfigurator");
+
+			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(mappingConfigurator);
+			return mapper.Map(typeFrom);
+		}
+
+		/// <summary>
+		/// Maps the specified from.
+		/// </summary>
+		/// <typeparam name="TFrom">The type of from.</typeparam>
+		/// <typeparam name="TTo">The type of to.</typeparam>
+		/// <param name="typeFrom">The object from.</param>
+		/// <param name="typeTo">The destination object.</param>
+		/// <param name="mappingConfigurator"></param>
+		/// <returns>
+		/// The mapped object.
+		/// </returns>
+		protected virtual TTo Map<TFrom, TTo>(TFrom typeFrom, TTo typeTo, IMappingConfigurator mappingConfigurator)
+		{
+			Assert.ArgumentNotNull(typeFrom, "typeFrom");
+			Assert.ArgumentNotNull(typeTo, "typeTo");
+			Assert.ArgumentNotNull(mappingConfigurator, "@mappingConfigurator");
+
+			var mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(mappingConfigurator);
+			return mapper.Map(typeFrom, typeTo);
+		}
+
+		/// <summary>
+		/// Adds the mapping configurator.
+		/// </summary>
+		/// <param name="typeFrom">The type from.</param>
+		/// <param name="typeTo">The type to.</param>
+		/// <param name="configurator">The configurator.</param>
+		protected virtual void AddMappingConfigurator(Type typeFrom, Type typeTo, IMappingConfigurator configurator)
+		{
+			Assert.ArgumentNotNull(configurator, "configurator");
+			Assert.ArgumentNotNull(typeFrom, "typeFrom");
+			Assert.ArgumentNotNull(typeTo, "typeTo");
+
+			MappingConfigurators.Add(new Tuple<Type, Type, IMappingConfigurator>(typeFrom, typeTo, configurator));
+		}
+
+		/// NOTE: Resolving from IoC can be added here.
+		/// <summary>
 		/// Gets the configuration.
 		/// </summary>
 		/// <typeparam name="TFrom">The type of from.</typeparam>
 		/// <typeparam name="TTo">The type of to.</typeparam>
 		/// <returns>
-		/// The Configurator.
+		/// The configurator instance.
 		/// </returns>
-		/// NOTE: Use IoC instead.
 		protected virtual IMappingConfigurator GetConfigurator<TFrom, TTo>()
 		{
 			var configuration = MappingConfigurators.Find(mp => mp.Item1.IsAssignableFrom(typeof(TFrom)) && mp.Item2.IsAssignableFrom(typeof(TTo)));
 
-			return configuration == null ? new DefaultMapConfig() : configuration.Item3;
+			return configuration == null ? DefaultConfigurator : configuration.Item3;
 		}
 	}
 }

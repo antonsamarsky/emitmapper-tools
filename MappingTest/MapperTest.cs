@@ -14,7 +14,6 @@ namespace MappingTest
 	/// The mapper tests.
 	/// </summary>
 	[TestFixture]
-
 	public class MapperTest
 	{
 		/// <summary>
@@ -101,15 +100,17 @@ namespace MappingTest
 		/// Entities to enity variants mapping test.
 		/// http://emitmapper.codeplex.com/wikipage?title=Customization%20using%20default%20configurator&referringTitle=Documentation&ANCHOR#customization_overview
 		/// </summary>
-		[Test]
+		[Test, Repeat(100)]
 		public void EntityToEnityVariantsMappingTest()
 		{
 			var mapConfig = new DefaultMapConfig().PostProcess<object>((value, state) =>
-																																	{
-																																		Console.WriteLine("Post processing: " + value.ToString());
-																																		return value;
-																																	});
-			Entity2 entity2 = Mapper.Map<Entity, Entity2>(this.entity, mapConfig);
+			{
+				Console.WriteLine("Post processing: " + value.ToString());
+				return value;
+			});
+			Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
+
+			Entity2 entity2 = Mapper.Map<Entity, Entity2>(this.entity);
 
 			Assert.AreEqual(this.entity.Id, entity2.Id);
 			Assert.AreEqual(this.entity.Name, entity2.Name);
