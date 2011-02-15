@@ -6,17 +6,17 @@ namespace Domain
 	[DataContainer(TableName = "Order")]
 	public class Entity
 	{
-		[DataMember(FieldName = "order_id")]
+		[DataMember(FieldName = "order_id", FieldType = typeof(string))]
 		public Guid Id { get; set; }
 
 		[DataMember(FieldName = "order_name")]
 		public string Name { get; set; }
 
-		[DataMember(FieldName = "order_number")]
-		[DataMember(FieldName = "order_number_2")]
+        [DataMember(FieldName = "order_number", FieldType = typeof(int))]
+        [DataMember(FieldName = "order_number_2", FieldType = typeof(int))]
 		public int Number { get; set; }
 
-		[DataMember(FieldName = "order_price")]
+		[DataMember(FieldName = "order_price", FieldType = typeof(decimal))]
 		public decimal Price { get; set; }
 
 		[DataMember]

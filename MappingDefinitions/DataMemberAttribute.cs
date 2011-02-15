@@ -18,6 +18,6 @@ namespace MappingDefinitions
 		/// Gets or sets the type of the field.
 		/// </summary>
 		/// <value>The type of the field.</value>
-		public virtual string FieldType { get; set; }
+		public virtual Type FieldType { get; set; }
 	}
 }
