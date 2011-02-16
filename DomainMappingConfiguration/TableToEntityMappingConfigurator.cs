@@ -23,11 +23,17 @@ namespace DomainMappingConfiguration
 		private readonly IDictionary<MemberInfo, KeyValuePair<string, Type>> memberFieldDescription;
 
 		/// <summary>
+		/// The converters collection.
+		/// </summary>
+		private readonly IDictionary<Type, TypeConverter> typeCoverters;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="TableToEntityMappingConfigurator"/> class.
 		/// </summary>
 		public TableToEntityMappingConfigurator()
 		{
 			this.memberFieldDescription = new Dictionary<MemberInfo, KeyValuePair<string, Type>>();
+			this.typeCoverters = new Dictionary<Type, TypeConverter>();
 		}
 
 		/// <summary>
@@ -50,9 +56,8 @@ namespace DomainMappingConfiguration
 														return ValueToWrite<object>.Skip();
 													}
 
-													var fieldDescription = GetFieldDescription(destinationMember);
-
-													var destinationMemberValue = ConvertFieldToDestinationProperty(item as Table, fieldDescription.Key, fieldDescription.Value, destinationMember as PropertyInfo);
+													var fieldDescription = this.GetFieldDescription(destinationMember);
+													var destinationMemberValue = this.ConvertFieldToDestinationProperty(item as Table, fieldDescription.Key, fieldDescription.Value, destinationMember as PropertyInfo);
 
 													return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
 												})
@@ -97,7 +102,7 @@ namespace DomainMappingConfiguration
 		/// <param name="fieldType">Type of the field.</param>
 		/// <param name="destinationProperty">The destination property.</param>
 		/// <returns>The conversion result.</returns>
-		private static object ConvertFieldToDestinationProperty(Table table, string fieldName, Type fieldType, PropertyInfo destinationProperty)
+		private object ConvertFieldToDestinationProperty(Table table, string fieldName, Type fieldType, PropertyInfo destinationProperty)
 		{
 			if (table == null)
 			{
@@ -118,24 +123,63 @@ namespace DomainMappingConfiguration
 			var sourceType = fieldType ?? fieldValue.GetType();
 			var destinationType = destinationProperty.PropertyType;
 
+			return destinationType.IsAssignableFrom(sourceType) ? fieldValue : this.ConvertValue(fieldValue, sourceType, destinationType);
+		}
+
+		/// <summary>
+		/// Converts the value.
+		/// </summary>
+		/// <param name="sourceValue">The source value.</param>
+		/// <param name="sourceType">Type of the source.</param>
+		/// <param name="destinationType">Type of the destination.</param>
+		/// <returns>The converted value.</returns>
+		private object ConvertValue(object sourceValue, Type sourceType, Type destinationType)
+		{
 			object result = null;
-			if (destinationType.IsAssignableFrom(sourceType))
+
+			TypeConverter typeConverter;
+			if (this.typeCoverters.TryGetValue(destinationType, out typeConverter))
 			{
-				result = fieldValue;
-			}
-			else
-			{
-				var converter = TypeDescriptor.GetConverter(destinationType);
-				if (converter != null && converter.CanConvertFrom(sourceType))
+				if (typeConverter.CanConvertFrom(sourceType))
 				{
-					result = converter.ConvertFrom(fieldValue);
+					result = typeConverter.ConvertFrom(sourceValue);
 				}
 				else
 				{
-					converter = TypeDescriptor.GetConverter(sourceType);
-					if (converter != null && converter.CanConvertTo(destinationType))
+					if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
 					{
-						result = converter.ConvertTo(fieldValue, destinationType);
+						if (typeConverter.CanConvertTo(destinationType))
+						{
+							result = typeConverter.ConvertTo(sourceValue, destinationType);
+						}
+					}
+				}
+			}
+			else
+			{
+				typeConverter = TypeDescriptor.GetConverter(destinationType);
+				if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
+				{
+					result = typeConverter.ConvertFrom(sourceValue);
+					this.typeCoverters.Add(destinationType, typeConverter);
+				}
+				else
+				{
+					if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
+					{
+						if (typeConverter.CanConvertTo(destinationType))
+						{
+							result = typeConverter.ConvertTo(sourceValue, destinationType);
+						}
+					}
+					else
+					{
+						typeConverter = TypeDescriptor.GetConverter(sourceType);
+						if (typeConverter.CanConvertTo(destinationType))
+						{
+							result = typeConverter.ConvertTo(sourceValue, destinationType);
+							this.typeCoverters.Add(sourceType, typeConverter);
+						}
 					}
 				}
 			}

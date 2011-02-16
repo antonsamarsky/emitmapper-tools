@@ -23,12 +23,19 @@ namespace DomainMappingConfiguration
 		private readonly IDictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>> memberFieldsDescription;
 
 		/// <summary>
+		/// The converters collection.
+		/// </summary>
+		private readonly IDictionary<Type, TypeConverter> typeCoverters;
+
+		/// <summary>
 		/// Initializes a new instance of the <see cref="EntityToTableMappingConfigurator"/> class.
 		/// </summary>
 		public EntityToTableMappingConfigurator()
 		{
 			ConstructBy(() => new Table { Fields = new Dictionary<string, object>() });
-			memberFieldsDescription = new Dictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>>();
+
+			this.memberFieldsDescription = new Dictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>>();
+			this.typeCoverters = new Dictionary<Type, TypeConverter>();
 		}
 
 		/// <summary>
@@ -88,7 +95,7 @@ namespace DomainMappingConfiguration
 		/// <param name="propertyValue">The property value.</param>
 		/// <param name="table">The table.</param>
 		/// <param name="fieldsDescription">The fields description.</param>
-		private static void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<KeyValuePair<string, Type>> fieldsDescription)
+		private void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<KeyValuePair<string, Type>> fieldsDescription)
 		{
 			if (table == null)
 			{
@@ -107,33 +114,74 @@ namespace DomainMappingConfiguration
 					return;
 				}
 
-				object value = null;
-				if (fd.Value.IsAssignableFrom(propertyType))
-				{
-					value = propertyValue;
-				}
-				else
-				{
-					var converter = TypeDescriptor.GetConverter(fd.Value);
-					if (converter != null && converter.CanConvertFrom(propertyType))
-					{
-						value = converter.ConvertFrom(propertyValue);
-					}
-					else
-					{
-						converter = TypeDescriptor.GetConverter(propertyType);
-						if (converter != null && converter.CanConvertTo(fd.Value))
-						{
-							value = converter.ConvertTo(propertyValue, fd.Value);
-						}
-					}
-				}
+				object value = fd.Value.IsAssignableFrom(propertyType) ? propertyValue : this.ConvertValue(propertyValue, propertyType, fd.Value);
 
 				if (value != null)
 				{
 					table.Fields.Add(fd.Key, value);
 				}
 			});
+		}
+
+		/// <summary>
+		/// Converts the value.
+		/// </summary>
+		/// <param name="sourceValue">The source value.</param>
+		/// <param name="sourceType">Type of the source.</param>
+		/// <param name="destinationType">Type of the destination.</param>
+		/// <returns>The converted value.</returns>
+		private object ConvertValue(object sourceValue, Type sourceType, Type destinationType)
+		{
+			object result = null;
+
+			TypeConverter typeConverter;
+			if (this.typeCoverters.TryGetValue(destinationType, out typeConverter))
+			{
+				if (typeConverter.CanConvertFrom(sourceType))
+				{
+					result = typeConverter.ConvertFrom(sourceValue);
+				}
+				else
+				{
+					if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
+					{
+						if (typeConverter.CanConvertTo(destinationType))
+						{
+							result = typeConverter.ConvertTo(sourceValue, destinationType);
+						}
+					}
+				}
+			}
+			else
+			{
+				typeConverter = TypeDescriptor.GetConverter(destinationType);
+				if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
+				{
+					result = typeConverter.ConvertFrom(sourceValue);
+					this.typeCoverters.Add(destinationType, typeConverter);
+				}
+				else
+				{
+					if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
+					{
+						if (typeConverter.CanConvertTo(destinationType))
+						{
+							result = typeConverter.ConvertTo(sourceValue, destinationType);
+						}
+					}
+					else
+					{
+						typeConverter = TypeDescriptor.GetConverter(sourceType);
+						if (typeConverter.CanConvertTo(destinationType))
+						{
+							result = typeConverter.ConvertTo(sourceValue, destinationType);
+							this.typeCoverters.Add(sourceType, typeConverter);
+						}
+					}
+				}
+			}
+
+			return result;
 		}
 	}
 }
