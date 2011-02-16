@@ -109,7 +109,7 @@ namespace DomainMappingConfiguration
 				return null;
 			}
 
-			dynamic fieldValue;
+			object fieldValue;
 			if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
 			{
 				return null;
