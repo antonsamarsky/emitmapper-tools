@@ -129,7 +129,7 @@ namespace MappingTest
 		/// Entities to entity mapping collection test.
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
-		[TestCase(10000)]
+		[TestCase(1000000)]
 		public void EntityToEntityMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
@@ -153,7 +153,7 @@ namespace MappingTest
 			var entities2 = Mapper.MapCollection<Entity, Entity>(entities).ToArray();
 
 			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / ((float)capacity)));
 
 			for (int i = 0; i < capacity; i++)
 			{
@@ -170,7 +170,7 @@ namespace MappingTest
 		/// Tables to entity mapping collection test.
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
-		[TestCase(10000)]
+		[TestCase(1000000)]
 		public void TableToEntityMappingCollectionTest(int capacity)
 		{
 			var tables = Enumerable.Range(0, capacity).Select(i => new Table
@@ -198,7 +198,7 @@ namespace MappingTest
 			var entities = Mapper.MapCollection<Table, Entity>(tables).ToArray();
 
 			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / ((float)capacity)));
 
 			for (int i = 0; i < capacity; i++)
 			{
@@ -216,7 +216,7 @@ namespace MappingTest
 		/// Entities to table mapping collection test.
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
-		[TestCase(10000)]
+		[TestCase(1000000)]
 		public void EntityToTableMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
@@ -237,10 +237,10 @@ namespace MappingTest
 			stopWatch.Start();
 			GC.Collect();
 
-			var tables = Mapper.MapCollection<Entity, Table>(entities).ToArray();
+			var tables = Mapper.MapCollection<Entity, Table>(entities).AsParallel().ToArray();
 
 			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / ((float)capacity)));
 
 			for (int i = 0; i < capacity; i++)
 			{
