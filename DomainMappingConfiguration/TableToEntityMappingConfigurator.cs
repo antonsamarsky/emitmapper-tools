@@ -10,70 +10,70 @@ using MemberDescriptor = EmitMapper.MappingConfiguration.MemberDescriptor;
 
 namespace DomainMappingConfiguration
 {
-    /// <summary>
-    /// The item configuration.
-    /// </summary>
-    public class TableToEntityMappingConfigurator : DefaultMapConfig
-    {
-        /// <summary>
-        /// Gets the mapping operations.
-        /// </summary>
-        /// <param name="from">The type from.</param>
-        /// <param name="to">To type to.</param>
-        /// <returns>The mapping operations.</returns>
-        public override IMappingOperation[] GetMappingOperations(Type from, Type to)
-        {
-            return FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(to)
-                            .Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
-                            .Select(destinationMember => (IMappingOperation)new DestWriteOperation
-                            {
-                                Destination = new MemberDescriptor(destinationMember),
-                                Getter = (ValueGetter<object>)((item, state) =>
-                                {
-                                    dynamic table = item;
+	/// <summary>
+	/// The item configuration.
+	/// </summary>
+	public class TableToEntityMappingConfigurator : DefaultMapConfig
+	{
+		/// <summary>
+		/// Gets the mapping operations.
+		/// </summary>
+		/// <param name="from">The type from.</param>
+		/// <param name="to">To type to.</param>
+		/// <returns>The mapping operations.</returns>
+		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
+		{
+			return FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(to)
+											.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
+											.Select(destinationMember => (IMappingOperation)new DestWriteOperation
+											{
+												Destination = new MemberDescriptor(destinationMember),
+												Getter = (ValueGetter<object>)((item, state) =>
+												{
+													dynamic table = item;
 
-                                    if (table == null)
-                                    {
-                                        return ValueToWrite<object>.Skip();
-                                    }
+													if (table == null)
+													{
+														return ValueToWrite<object>.Skip();
+													}
 
-                                    var attribute = Attribute.GetCustomAttributes(destinationMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
+													var attribute = Attribute.GetCustomAttributes(destinationMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
 
-                                    if (attribute == null)
-                                    {
-                                        return ValueToWrite<object>.Skip();
-                                    }
+													if (attribute == null)
+													{
+														return ValueToWrite<object>.Skip();
+													}
 
-                                    var fieldName = !string.IsNullOrEmpty(attribute.FieldName) ? attribute.FieldName : destinationMember.Name;
+													var fieldName = !string.IsNullOrEmpty(attribute.FieldName) ? attribute.FieldName : destinationMember.Name;
 
-                                    dynamic fieldValue;
-                                    if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
-                                    {
-                                        return ValueToWrite<object>.Skip();
-                                    }
+													dynamic fieldValue;
+													if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
+													{
+														return ValueToWrite<object>.Skip();
+													}
 
-                                    // NOTE: Map the property value to the filed.
-                                    var destinationType = ((PropertyInfo)destinationMember).PropertyType;
+													// NOTE: Map the property value to the filed.
+													var destinationType = ((PropertyInfo)destinationMember).PropertyType;
 
-                                    dynamic destinationMemberValue;
-                                    if (destinationType.IsAssignableFrom(fieldValue.GetType()))
-                                    {
-                                        destinationMemberValue = fieldValue;
-                                    }
-                                    else
-                                    {
-                                        var converter = TypeDescriptor.GetConverter(destinationType);
-                                        if (converter == null || !converter.CanConvertFrom(fieldValue.GetType()) || !converter.CanConvertTo(destinationType))
-                                        {
-                                            return ValueToWrite<object>.Skip();
-                                        }
+													dynamic destinationMemberValue;
+													if (destinationType.IsAssignableFrom(fieldValue.GetType()))
+													{
+														destinationMemberValue = fieldValue;
+													}
+													else
+													{
+														var converter = TypeDescriptor.GetConverter(destinationType);
+														if (converter == null || !converter.CanConvertFrom(fieldValue.GetType()) || !converter.CanConvertTo(destinationType))
+														{
+															return ValueToWrite<object>.Skip();
+														}
 
-                                        destinationMemberValue = converter.ConvertTo(fieldValue, destinationType);
-                                    }
+														destinationMemberValue = converter.ConvertTo(fieldValue, destinationType);
+													}
 
-                                    return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
-                                })
-                            })).ToArray();
-        }
-    }
+													return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
+												})
+											})).ToArray();
+		}
+	}
 }

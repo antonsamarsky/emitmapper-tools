@@ -17,10 +17,10 @@ namespace MappingTest
 	public class MapperTest
 	{
 		/// <summary>
-		/// Entities to enity mapping test.
+		/// Entities to entity mapping test.
 		/// </summary>
 		[Test]
-		public void EntityToEnityMappingTest()
+		public void EntityToEntityMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -31,17 +31,7 @@ namespace MappingTest
 				UserName = null,
 			};
 
-			// Cold mapping
-			Mapper.Map<Entity, Entity2>(new Entity());
-
-			var stopWatch = new Stopwatch();
-			stopWatch.Start();
-			GC.Collect();
-
 			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
-
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
 
 			Assert.AreEqual(entity.Id, entity2.Id);
 			Assert.AreEqual(entity.Name, entity2.Name);
@@ -49,11 +39,10 @@ namespace MappingTest
 		}
 
 		/// <summary>
-		/// Entities to enity variants mapping test.
-		/// http://emitmapper.codeplex.com/wikipage?title=Customization%20using%20default%20configurator&referringTitle=Documentation&ANCHOR#customization_overview
+		/// Entities to entity variants mapping test.
 		/// </summary>
 		[Test]
-		public void EntityToEnityVariantsMappingTest()
+		public void EntityToEntityVariantsMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -72,17 +61,7 @@ namespace MappingTest
 
 			Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
 
-			// Cold mapping
-			Mapper.Map<Entity, Entity2>(new Entity());
-
-			var stopWatch = new Stopwatch();
-			stopWatch.Start();
-			GC.Collect();
-
 			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
-
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
 
 			Assert.AreEqual(entity.Id, entity2.Id);
 			Assert.AreEqual(entity.Name, entity2.Name);
@@ -106,18 +85,7 @@ namespace MappingTest
 			};
 
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
-
-			// Cold mapping
-			Mapper.Map<Entity, Table>(new Entity());
-
-			var stopWatch = new Stopwatch();
-			stopWatch.Start();
-			GC.Collect();
-
 			var table = Mapper.Map<Entity, Table>(entity);
-
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
 
 			Assert.AreEqual(entity.Id.ToString(), table.Fields["order_id"]);
 			Assert.AreEqual(entity.Number, table.Fields["order_number"]);
@@ -147,20 +115,9 @@ namespace MappingTest
 			};
 
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
-
-			// Cold mapping
-            Mapper.Map<Table, Entity>(new Table { Fields = new Dictionary<string, dynamic>() });
-
-			var stopWatch = new Stopwatch();
-			stopWatch.Start();
-			GC.Collect();
-
 			var entity = Mapper.Map<Table, Entity>(table);
 
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping took: {0} ms", stopWatch.ElapsedMilliseconds));
-
-            Assert.AreEqual(table.Fields["order_id"].ToString(), entity.Id.ToString());
+			Assert.AreEqual(table.Fields["order_id"].ToString(), entity.Id.ToString());
 			Assert.AreEqual(table.Fields["order_number"], entity.Number);
 			Assert.AreEqual(table.Fields["order_number_2"], entity.Number);
 			Assert.AreEqual(table.Fields["order_name"], entity.Name);
@@ -168,8 +125,12 @@ namespace MappingTest
 			Assert.AreEqual(table.Fields["UserName"], entity.UserName);
 		}
 
+		/// <summary>
+		/// Entities to entity mapping collection test.
+		/// </summary>
+		/// <param name="capacity">The capacity.</param>
 		[TestCase(10000)]
-		public void EnityToEntityMappingCollectionTest(int capacity)
+		public void EntityToEntityMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
 			{
@@ -183,7 +144,7 @@ namespace MappingTest
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
 			// Cold mapping
-			Mapper.MapCollection<Entity, Entity2>(new List<Entity> {new Entity()});
+			Mapper.MapCollection<Entity, Entity2>(new List<Entity> { new Entity() });
 
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
@@ -254,6 +215,10 @@ namespace MappingTest
 			}
 		}
 
+		/// <summary>
+		/// Entities to table mapping collection test.
+		/// </summary>
+		/// <param name="capacity">The capacity.</param>
 		[TestCase(10000)]
 		public void EntityToTableMappingCollectionTest(int capacity)
 		{

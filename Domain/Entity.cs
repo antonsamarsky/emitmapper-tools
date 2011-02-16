@@ -12,11 +12,11 @@ namespace Domain
 		[DataMember(FieldName = "order_name")]
 		public string Name { get; set; }
 
-        [DataMember(FieldName = "order_number", FieldType = typeof(int))]
-        [DataMember(FieldName = "order_number_2", FieldType = typeof(int))]
+		[DataMember(FieldName = "order_number", FieldType = typeof(double))]
+		[DataMember(FieldName = "order_number_2", FieldType = typeof(double))]
 		public int Number { get; set; }
 
-		[DataMember(FieldName = "order_price", FieldType = typeof(decimal))]
+		[DataMember(FieldName = "order_price")]
 		public decimal Price { get; set; }
 
 		[DataMember]
