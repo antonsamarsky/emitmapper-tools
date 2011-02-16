@@ -154,28 +154,37 @@ namespace DomainMappingConfiguration
 			}
 			else
 			{
-				typeConverter = TypeDescriptor.GetConverter(destinationType);
-				if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
+				if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
 				{
-					result = typeConverter.ConvertFrom(sourceValue);
-					this.typeCoverters.Add(destinationType, typeConverter);
-				}
-				else
-				{
-					if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
+					if (typeConverter.CanConvertTo(destinationType))
 					{
-						if (typeConverter.CanConvertTo(destinationType))
-						{
-							result = typeConverter.ConvertTo(sourceValue, destinationType);
-						}
+						result = typeConverter.ConvertTo(sourceValue, destinationType);
 					}
 					else
 					{
-						typeConverter = TypeDescriptor.GetConverter(sourceType);
-						if (typeConverter.CanConvertTo(destinationType))
+						typeConverter = TypeDescriptor.GetConverter(destinationType);
+						if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
 						{
-							result = typeConverter.ConvertTo(sourceValue, destinationType);
-							this.typeCoverters.Add(sourceType, typeConverter);
+							result = typeConverter.ConvertFrom(sourceValue);
+							this.typeCoverters.Add(destinationType, typeConverter);
+						}
+					}
+				}
+				else
+				{
+					typeConverter = TypeDescriptor.GetConverter(sourceType);
+					if (typeConverter != null && typeConverter.CanConvertTo(destinationType))
+					{
+						result = typeConverter.ConvertTo(sourceValue, destinationType);
+						this.typeCoverters.Add(sourceType, typeConverter);
+					}
+					else
+					{
+						typeConverter = TypeDescriptor.GetConverter(destinationType);
+						if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
+						{
+							result = typeConverter.ConvertFrom(sourceValue);
+							this.typeCoverters.Add(destinationType, typeConverter);
 						}
 					}
 				}
