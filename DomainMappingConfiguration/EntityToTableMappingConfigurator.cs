@@ -27,7 +27,7 @@ namespace DomainMappingConfiguration
 		/// </summary>
 		public EntityToTableMappingConfigurator()
 		{
-			ConstructBy(() => new Table { Fields = new Dictionary<string, dynamic>() });
+			ConstructBy(() => new Table { Fields = new Dictionary<string, object>() });
 			memberFieldsDescription = new Dictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>>();
 		}
 
@@ -107,7 +107,7 @@ namespace DomainMappingConfiguration
 					return;
 				}
 
-				dynamic value = null;
+				object value = null;
 				if (fd.Value.IsAssignableFrom(propertyType))
 				{
 					value = propertyValue;

@@ -4,6 +4,6 @@ namespace Domain
 {
 	public class Table
 	{
-		public Dictionary<string, dynamic> Fields;
+		public Dictionary<string, object> Fields;
 	}
 }

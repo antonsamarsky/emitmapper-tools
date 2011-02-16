@@ -103,7 +103,7 @@ namespace MappingTest
 		{
 			var table = new Table
 			{
-				Fields = new Dictionary<string, dynamic>
+				Fields = new Dictionary<string, object>
 				{
 					{ "order_name", "Name" },
 					{ "order_id", Guid.NewGuid().ToString() },
@@ -176,7 +176,7 @@ namespace MappingTest
 		{
 			var tables = Enumerable.Range(0, capacity).Select(i => new Table
 			{
-				Fields = new Dictionary<string, dynamic>
+				Fields = new Dictionary<string, object>
 				{
 					{ "order_id", Guid.NewGuid().ToString() },
 					{ "order_name", "Name_" + i },
@@ -190,7 +190,7 @@ namespace MappingTest
 			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
 			// Cold mapping
-			Mapper.MapCollection<Table, Entity>(new List<Table> { new Table { Fields = new Dictionary<string, dynamic>() } });
+			Mapper.MapCollection<Table, Entity>(new List<Table> { new Table { Fields = new Dictionary<string, object>() } });
 
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
