@@ -97,7 +97,7 @@ namespace DomainMappingConfiguration
 		/// <param name="fieldType">Type of the field.</param>
 		/// <param name="destinationProperty">The destination property.</param>
 		/// <returns>The conversion result.</returns>
-		private static dynamic ConvertFieldToDestinationProperty(Table table, string fieldName, Type fieldType, PropertyInfo destinationProperty)
+		private static object ConvertFieldToDestinationProperty(Table table, string fieldName, Type fieldType, PropertyInfo destinationProperty)
 		{
 			if (table == null)
 			{
@@ -118,7 +118,7 @@ namespace DomainMappingConfiguration
 			var sourceType = fieldType ?? fieldValue.GetType();
 			var destinationType = destinationProperty.PropertyType;
 
-			dynamic result = null;
+			object result = null;
 			if (destinationType.IsAssignableFrom(sourceType))
 			{
 				result = fieldValue;
