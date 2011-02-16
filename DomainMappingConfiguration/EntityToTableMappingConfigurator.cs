@@ -20,7 +20,7 @@ namespace DomainMappingConfiguration
 		/// <summary>
 		/// The collection of attributes values.
 		/// </summary>
-		private readonly IDictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>> memberFieldsDescription;
+		private readonly IDictionary<MemberInfo, List<KeyValuePair<string, Type>>> memberFieldsDescription;
 
 		/// <summary>
 		/// The converters collection.
@@ -34,7 +34,7 @@ namespace DomainMappingConfiguration
 		{
 			ConstructBy(() => new Table { Fields = new Dictionary<string, object>() });
 
-			this.memberFieldsDescription = new Dictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>>();
+			this.memberFieldsDescription = new Dictionary<MemberInfo, List<KeyValuePair<string, Type>>>();
 			this.typeCoverters = new Dictionary<Type, TypeConverter>();
 		}
 
@@ -69,19 +69,19 @@ namespace DomainMappingConfiguration
 		/// </summary>
 		/// <param name="memberInfo">The member info.</param>
 		/// <returns>The fields description.</returns>
-		private IEnumerable<KeyValuePair<string, Type>> GetFieldsDescription(MemberInfo memberInfo)
+		private List<KeyValuePair<string, Type>> GetFieldsDescription(MemberInfo memberInfo)
 		{
-			IEnumerable<KeyValuePair<string, Type>> result;
+			List<KeyValuePair<string, Type>> result;
 
 			if (memberFieldsDescription.TryGetValue(memberInfo, out result))
 			{
 				return result;
 			}
 
-			result = from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
+			result = (from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
 							 let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? memberInfo.Name : attribute.FieldName
 							 let fieldType = attribute.FieldType ?? ((PropertyInfo)memberInfo).PropertyType
-							 select new KeyValuePair<string, Type>(fieldName, fieldType);
+							 select new KeyValuePair<string, Type>(fieldName, fieldType)).ToList();
 
 			memberFieldsDescription.Add(memberInfo, result);
 
@@ -95,19 +95,14 @@ namespace DomainMappingConfiguration
 		/// <param name="propertyValue">The property value.</param>
 		/// <param name="table">The table.</param>
 		/// <param name="fieldsDescription">The fields description.</param>
-		private void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<KeyValuePair<string, Type>> fieldsDescription)
+		private void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, List<KeyValuePair<string, Type>> fieldsDescription)
 		{
 			if (table == null)
 			{
 				return;
 			}
 
-			if (!fieldsDescription.Any())
-			{
-				return;
-			}
-
-			fieldsDescription.ToList().ForEach(fd =>
+			fieldsDescription.ForEach(fd =>
 			{
 				if (table.Fields.ContainsKey(fd.Key))
 				{
