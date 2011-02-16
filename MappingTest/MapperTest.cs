@@ -150,21 +150,20 @@ namespace MappingTest
 			stopWatch.Start();
 			GC.Collect();
 
-			var entities2 = Mapper.MapCollection<Entity, Entity>(entities);
+			var entities2 = Mapper.MapCollection<Entity, Entity>(entities).ToArray();
 
-			var entities2Array = entities2.ToArray();
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
+
 			for (int i = 0; i < capacity; i++)
 			{
-				var entity2 = entities2Array[i];
+				var entity2 = entities2[i];
 				var entity = entities[i];
 
 				Assert.AreEqual(entity.Id, entity2.Id);
 				Assert.AreEqual(entity.Name, entity2.Name);
 				Assert.AreEqual(entity.UserName, entity2.UserName);
 			}
-
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
 		}
 
 		/// <summary>
@@ -196,9 +195,7 @@ namespace MappingTest
 			stopWatch.Start();
 			GC.Collect();
 
-			var entities = Mapper.MapCollection<Table, Entity>(tables);
-
-			var entitiesArray = entities.ToArray();
+			var entities = Mapper.MapCollection<Table, Entity>(tables).ToArray();
 
 			stopWatch.Stop();
 			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
@@ -206,7 +203,7 @@ namespace MappingTest
 			for (int i = 0; i < capacity; i++)
 			{
 				var table = tables[i];
-				var entity = entitiesArray[i];
+				var entity = entities[i];
 
 				Assert.AreEqual(table.Fields["order_name"], entity.Name);
 				Assert.AreEqual(table.Fields["order_number"], entity.Number);
@@ -240,16 +237,14 @@ namespace MappingTest
 			stopWatch.Start();
 			GC.Collect();
 
-			var tables = Mapper.MapCollection<Entity, Table>(entities);
-
-			var tablesArray = tables.ToArray();
+			var tables = Mapper.MapCollection<Entity, Table>(entities).ToArray();
 
 			stopWatch.Stop();
 			Console.WriteLine(string.Format("Mapping of the collection took: {0} ms", stopWatch.ElapsedMilliseconds));
 
 			for (int i = 0; i < capacity; i++)
 			{
-				var table = tablesArray[i];
+				var table = tables[i];
 				var entity = entities[i];
 
 				Assert.AreEqual(entity.Name, table.Fields["order_name"]);
