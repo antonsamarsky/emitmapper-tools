@@ -17,9 +17,18 @@ namespace DomainMappingConfiguration
 	/// </summary>
 	public class EntityToTableMappingConfigurator : DefaultMapConfig
 	{
+		/// <summary>
+		/// The collection of attributes values.
+		/// </summary>
+		private readonly IDictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>> memberFieldsDescription;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="EntityToTableMappingConfigurator"/> class.
+		/// </summary>
 		public EntityToTableMappingConfigurator()
 		{
 			ConstructBy(() => new Table { Fields = new Dictionary<string, dynamic>() });
+			memberFieldsDescription = new Dictionary<MemberInfo, IEnumerable<KeyValuePair<string, Type>>>();
 		}
 
 		/// <summary>
@@ -42,24 +51,44 @@ namespace DomainMappingConfiguration
 														return;
 													}
 
-													var sourceProperty = (PropertyInfo)sourceMember;
-
-													var fieldsDescription = GetFieldsDescription(sourceProperty);
-
-													ConvertSourceProperyToFields(sourceProperty.PropertyType, value, destination as Table, fieldsDescription);
+													var fieldsDescription = this.GetFieldsDescription(sourceMember);
+													ConvertSourcePropertyToFields(((PropertyInfo)sourceMember).PropertyType, value, destination as Table, fieldsDescription);
 												}
 											})).ToArray();
 		}
 
-		private static IEnumerable<KeyValuePair<string, Type>> GetFieldsDescription(PropertyInfo propertyInfo)
+		/// <summary>
+		/// Gets the fields description.
+		/// </summary>
+		/// <param name="memberInfo">The member info.</param>
+		/// <returns>The fields description.</returns>
+		private IEnumerable<KeyValuePair<string, Type>> GetFieldsDescription(MemberInfo memberInfo)
 		{
-			return from attribute in Attribute.GetCustomAttributes(propertyInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
-						 let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? propertyInfo.Name : attribute.FieldName
-						 let fieldType = attribute.FieldType ?? propertyInfo.PropertyType
-						 select new KeyValuePair<string, Type>(fieldName, fieldType);
+			IEnumerable<KeyValuePair<string, Type>> result;
+
+			if (memberFieldsDescription.TryGetValue(memberInfo, out result))
+			{
+				return result;
+			}
+
+			result = from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
+							 let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? memberInfo.Name : attribute.FieldName
+							 let fieldType = attribute.FieldType ?? ((PropertyInfo)memberInfo).PropertyType
+							 select new KeyValuePair<string, Type>(fieldName, fieldType);
+
+			memberFieldsDescription.Add(memberInfo, result);
+
+			return result;
 		}
 
-		private static void ConvertSourceProperyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<KeyValuePair<string, Type>> fieldsDescription)
+		/// <summary>
+		/// Converts the source property to fields.
+		/// </summary>
+		/// <param name="propertyType">Type of the property.</param>
+		/// <param name="propertyValue">The property value.</param>
+		/// <param name="table">The table.</param>
+		/// <param name="fieldsDescription">The fields description.</param>
+		private static void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<KeyValuePair<string, Type>> fieldsDescription)
 		{
 			if (table == null)
 			{

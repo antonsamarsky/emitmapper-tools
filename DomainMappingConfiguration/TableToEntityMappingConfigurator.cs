@@ -18,6 +18,19 @@ namespace DomainMappingConfiguration
 	public class TableToEntityMappingConfigurator : DefaultMapConfig
 	{
 		/// <summary>
+		/// The member field description
+		/// </summary>
+		private readonly IDictionary<MemberInfo, KeyValuePair<string, Type>> memberFieldDescription;
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="TableToEntityMappingConfigurator"/> class.
+		/// </summary>
+		public TableToEntityMappingConfigurator()
+		{
+			this.memberFieldDescription = new Dictionary<MemberInfo, KeyValuePair<string, Type>>();
+		}
+
+		/// <summary>
 		/// Gets the mapping operations.
 		/// </summary>
 		/// <param name="from">The type from.</param>
@@ -39,15 +52,27 @@ namespace DomainMappingConfiguration
 
 													var fieldDescription = GetFieldDescription(destinationMember);
 
-													var destinationMemberValue = ConvertFieldToDestinationPropery(item as Table, fieldDescription.Key, fieldDescription.Value, destinationMember as PropertyInfo);
+													var destinationMemberValue = ConvertFieldToDestinationProperty(item as Table, fieldDescription.Key, fieldDescription.Value, destinationMember as PropertyInfo);
 
 													return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
 												})
 											})).ToArray();
 		}
 
-		private static KeyValuePair<string, Type> GetFieldDescription(MemberInfo memberInfo)
+		/// <summary>
+		/// Gets the field description.
+		/// </summary>
+		/// <param name="memberInfo">The member info.</param>
+		/// <returns>The field description.</returns>
+		private KeyValuePair<string, Type> GetFieldDescription(MemberInfo memberInfo)
 		{
+			KeyValuePair<string, Type> result;
+
+			if (this.memberFieldDescription.TryGetValue(memberInfo, out result))
+			{
+				return result;
+			}
+
 			var attribute = Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
 
 			if (attribute == null)
@@ -58,10 +83,21 @@ namespace DomainMappingConfiguration
 			var fieldName = !string.IsNullOrEmpty(attribute.FieldName) ? attribute.FieldName : memberInfo.Name;
 			var fieldType = attribute.FieldType;
 
-			return new KeyValuePair<string, Type>(fieldName, fieldType);
+			result = new KeyValuePair<string, Type>(fieldName, fieldType);
+			this.memberFieldDescription.Add(memberInfo, result);
+
+			return result;
 		}
 
-		private static dynamic ConvertFieldToDestinationPropery(Table table, string fieldName, Type fieldType, PropertyInfo destinationPropery)
+		/// <summary>
+		/// Converts the field to destination property.
+		/// </summary>
+		/// <param name="table">The table.</param>
+		/// <param name="fieldName">Name of the field.</param>
+		/// <param name="fieldType">Type of the field.</param>
+		/// <param name="destinationProperty">The destination property.</param>
+		/// <returns>The conversion result.</returns>
+		private static dynamic ConvertFieldToDestinationProperty(Table table, string fieldName, Type fieldType, PropertyInfo destinationProperty)
 		{
 			if (table == null)
 			{
@@ -80,7 +116,7 @@ namespace DomainMappingConfiguration
 			}
 
 			var sourceType = fieldType ?? fieldValue.GetType();
-			var destinationType = destinationPropery.PropertyType;
+			var destinationType = destinationProperty.PropertyType;
 
 			dynamic result = null;
 			if (destinationType.IsAssignableFrom(sourceType))
