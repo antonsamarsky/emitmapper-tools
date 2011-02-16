@@ -44,59 +44,65 @@ namespace DomainMappingConfiguration
 
 													var sourceProperty = (PropertyInfo)sourceMember;
 
-													var fieldDescriptions = GetFieldDescriptions(sourceProperty);
+													var fieldsDescription = GetFieldsDescription(sourceProperty);
 
-													ConvertSourceProperyToFields(sourceProperty.PropertyType, value, destination as Table, fieldDescriptions);
+													ConvertSourceProperyToFields(sourceProperty.PropertyType, value, destination as Table, fieldsDescription);
 												}
 											})).ToArray();
 		}
 
-		private static IEnumerable<Tuple<string, Type>> GetFieldDescriptions(PropertyInfo propertyInfo)
+		private static IEnumerable<KeyValuePair<string, Type>> GetFieldsDescription(PropertyInfo propertyInfo)
 		{
 			return from attribute in Attribute.GetCustomAttributes(propertyInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
 						 let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? propertyInfo.Name : attribute.FieldName
 						 let fieldType = attribute.FieldType ?? propertyInfo.PropertyType
-						 select new Tuple<string, Type>(fieldName, fieldType);
+						 select new KeyValuePair<string, Type>(fieldName, fieldType);
 		}
 
-		private static void ConvertSourceProperyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<Tuple<string, Type>> fieldDescriptions)
+		private static void ConvertSourceProperyToFields(Type propertyType, object propertyValue, Table table, IEnumerable<KeyValuePair<string, Type>> fieldsDescription)
 		{
 			if (table == null)
 			{
 				return;
 			}
 
-			if (!fieldDescriptions.Any())
+			if (!fieldsDescription.Any())
 			{
 				return;
 			}
 
-			var converterLazy = new Lazy<TypeConverter>(() => TypeDescriptor.GetConverter(propertyType));
-
-			fieldDescriptions.ToList().ForEach(fd =>
+			fieldsDescription.ToList().ForEach(fd =>
 			{
-				if (table.Fields.ContainsKey(fd.Item1))
+				if (table.Fields.ContainsKey(fd.Key))
 				{
 					return;
 				}
 
-				dynamic mappedValue = null;
-				if (fd.Item2.IsAssignableFrom(propertyType))
+				dynamic value = null;
+				if (fd.Value.IsAssignableFrom(propertyType))
 				{
-					mappedValue = propertyValue;
+					value = propertyValue;
 				}
 				else
 				{
-					var converter = converterLazy.Value;
-					if (converter != null && converter.CanConvertTo(fd.Item2))
+					var converter = TypeDescriptor.GetConverter(fd.Value);
+					if (converter != null && converter.CanConvertFrom(propertyType))
 					{
-						mappedValue = converter.ConvertTo(propertyValue, fd.Item2);
+						value = converter.ConvertFrom(propertyValue);
+					}
+					else
+					{
+						converter = TypeDescriptor.GetConverter(propertyType);
+						if (converter != null && converter.CanConvertTo(fd.Value))
+						{
+							value = converter.ConvertTo(propertyValue, fd.Value);
+						}
 					}
 				}
 
-				if (mappedValue != null)
+				if (value != null)
 				{
-					table.Fields.Add(fd.Item1, mappedValue);
+					table.Fields.Add(fd.Key, value);
 				}
 			});
 		}

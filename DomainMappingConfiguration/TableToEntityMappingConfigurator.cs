@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using Domain;
 using EmitMapper.MappingConfiguration;
 using EmitMapper.MappingConfiguration.MappingOperations;
 using EmitMapper.Utils;
@@ -30,50 +32,79 @@ namespace DomainMappingConfiguration
 												Destination = new MemberDescriptor(destinationMember),
 												Getter = (ValueGetter<object>)((item, state) =>
 												{
-													dynamic table = item;
-
-													if (table == null)
+													if (item == null)
 													{
 														return ValueToWrite<object>.Skip();
 													}
 
-													var attribute = Attribute.GetCustomAttributes(destinationMember, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
+													var fieldDescription = GetFieldDescription(destinationMember);
 
-													if (attribute == null)
-													{
-														return ValueToWrite<object>.Skip();
-													}
-
-													var fieldName = !string.IsNullOrEmpty(attribute.FieldName) ? attribute.FieldName : destinationMember.Name;
-
-													dynamic fieldValue;
-													if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
-													{
-														return ValueToWrite<object>.Skip();
-													}
-
-													// NOTE: Map the property value to the filed.
-													var destinationType = ((PropertyInfo)destinationMember).PropertyType;
-
-													dynamic destinationMemberValue;
-													if (destinationType.IsAssignableFrom(fieldValue.GetType()))
-													{
-														destinationMemberValue = fieldValue;
-													}
-													else
-													{
-														var converter = TypeDescriptor.GetConverter(destinationType);
-														if (converter == null || !converter.CanConvertFrom(fieldValue.GetType()) || !converter.CanConvertTo(destinationType))
-														{
-															return ValueToWrite<object>.Skip();
-														}
-
-														destinationMemberValue = converter.ConvertTo(fieldValue, destinationType);
-													}
+													var destinationMemberValue = ConvertFieldToDestinationPropery(item as Table, fieldDescription.Key, fieldDescription.Value, destinationMember as PropertyInfo);
 
 													return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
 												})
 											})).ToArray();
+		}
+
+		private static KeyValuePair<string, Type> GetFieldDescription(MemberInfo memberInfo)
+		{
+			var attribute = Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
+
+			if (attribute == null)
+			{
+				return new KeyValuePair<string, Type>();
+			}
+
+			var fieldName = !string.IsNullOrEmpty(attribute.FieldName) ? attribute.FieldName : memberInfo.Name;
+			var fieldType = attribute.FieldType;
+
+			return new KeyValuePair<string, Type>(fieldName, fieldType);
+		}
+
+		private static dynamic ConvertFieldToDestinationPropery(Table table, string fieldName, Type fieldType, PropertyInfo destinationPropery)
+		{
+			if (table == null)
+			{
+				return null;
+			}
+
+			if (string.IsNullOrEmpty(fieldName))
+			{
+				return null;
+			}
+
+			dynamic fieldValue;
+			if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
+			{
+				return null;
+			}
+
+			var sourceType = fieldType ?? fieldValue.GetType();
+			var destinationType = destinationPropery.PropertyType;
+
+			dynamic result = null;
+			if (destinationType.IsAssignableFrom(sourceType))
+			{
+				result = fieldValue;
+			}
+			else
+			{
+				var converter = TypeDescriptor.GetConverter(destinationType);
+				if (converter != null && converter.CanConvertFrom(sourceType))
+				{
+					result = converter.ConvertFrom(fieldValue);
+				}
+				else
+				{
+					converter = TypeDescriptor.GetConverter(sourceType);
+					if (converter != null && converter.CanConvertTo(destinationType))
+					{
+						result = converter.ConvertTo(fieldValue, destinationType);
+					}
+				}
+			}
+
+			return result;
 		}
 	}
 }

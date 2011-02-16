@@ -106,7 +106,7 @@ namespace MappingTest
 				Fields = new Dictionary<string, dynamic>
 				{
 					{ "order_name", "Name" },
-					{ "order_id", Guid.NewGuid() },
+					{ "order_id", Guid.NewGuid().ToString() },
 					{ "order_number", 9345 },
 					{ "order_number_2", 9345 },
 					{ "order_price", 100.500m },
@@ -181,7 +181,7 @@ namespace MappingTest
 					{ "order_id", Guid.NewGuid().ToString() },
 					{ "order_name", "Name_" + i },
 					{ "order_number", i },
-                    { "order_number_2", i },
+					{ "order_number_2", i },
 					{ "order_price", (decimal)Math.Sqrt(i) },
 					{ "UserName", "UserName_" + i }
 				}
