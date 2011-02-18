@@ -59,7 +59,7 @@ namespace MappingTest
 				return value;
 			});
 
-			Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
+			//Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
 
 			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
 

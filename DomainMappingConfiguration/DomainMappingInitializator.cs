@@ -1,4 +1,5 @@
 using Domain;
+using EmitMapper;
 using Mapping;
 
 namespace DomainMappingConfiguration
@@ -14,8 +15,8 @@ namespace DomainMappingConfiguration
 		/// <param name="mapperCore">The mapper core.</param>
 		public void ConfigureMapper(MapperCore mapperCore)
 		{
-			mapperCore.AddMappingConfiguration<Table, object>(new TableToEntityMappingConfigurator());
-			mapperCore.AddMappingConfiguration<object, Table>(new EntityToTableMappingConfigurator());
+			mapperCore.AddConfiguration<Table, object>(new TableToEntityMappingConfigurator());
+            mapperCore.AddConfiguration<object, Table>(new EntityToTableMappingConfigurator());
 		}
 	}
 }
