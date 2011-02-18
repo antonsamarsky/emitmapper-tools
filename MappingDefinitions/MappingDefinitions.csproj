@@ -35,6 +35,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAttributeManager.cs" />
     <Compile Include="DataContainerAttribute.cs" />
     <Compile Include="DataMemberAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

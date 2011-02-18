@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,19 +16,6 @@ namespace DomainMappingConfiguration
 	/// </summary>
 	public class TableToEntityMappingConfigurator : DefaultMapConfig
 	{
-		/// <summary>
-		/// The member field description
-		/// </summary>
-		private readonly ConcurrentDictionary<MemberInfo, KeyValuePair<string, Type>> memberFieldDescription;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="TableToEntityMappingConfigurator"/> class.
-		/// </summary>
-		public TableToEntityMappingConfigurator()
-		{
-			this.memberFieldDescription = new ConcurrentDictionary<MemberInfo, KeyValuePair<string, Type>>();
-		}
-
 		/// <summary>
 		/// Gets the mapping operations.
 		/// </summary>
@@ -50,8 +36,8 @@ namespace DomainMappingConfiguration
 												return ValueToWrite<object>.Skip();
 											}
 
-											var fieldDescription = this.GetFieldDescription(destinationMember);
-											var destinationMemberValue = ConvertFieldToDestinationProperty((Table)item, (PropertyInfo)destinationMember, fieldDescription);
+											var fieldDescription = DataAttributeManager.GetDataMemberDefinition(destinationMember);
+											var destinationMemberValue = ConvertFieldToDestinationProperty((Table)item, (PropertyInfo)destinationMember, fieldDescription.FirstOrDefault());
 
 											return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
 										})
@@ -67,7 +53,7 @@ namespace DomainMappingConfiguration
 		/// <returns>
 		/// The conversion result.
 		/// </returns>
-		protected static object ConvertFieldToDestinationProperty(Table table, PropertyInfo destinationProperty, KeyValuePair<string, Type> fieldDescription)
+		private static object ConvertFieldToDestinationProperty(Table table, PropertyInfo destinationProperty, KeyValuePair<string, Type> fieldDescription)
 		{
 			if (table == null || table.Fields == null || string.IsNullOrEmpty(fieldDescription.Key))
 			{
@@ -84,29 +70,6 @@ namespace DomainMappingConfiguration
 			var destinationType = destinationProperty.PropertyType;
 
 			return destinationType.IsAssignableFrom(sourceType) ? fieldValue : ReflectionUtil.ConvertValue(fieldValue, sourceType, destinationType);
-		}
-
-		/// <summary>
-		/// Gets the field description.
-		/// </summary>
-		/// <param name="memberInfo">The member info.</param>
-		/// <returns>The field description.</returns>
-		protected virtual KeyValuePair<string, Type> GetFieldDescription(MemberInfo memberInfo)
-		{
-			return this.memberFieldDescription.GetOrAdd(memberInfo, mi =>
-			{
-				var attribute = Attribute.GetCustomAttributes(mi, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>().FirstOrDefault();
-
-				if (attribute == null)
-				{
-					return new KeyValuePair<string, Type>();
-				}
-
-				var fieldName = !string.IsNullOrEmpty(attribute.FieldName) ? attribute.FieldName : mi.Name;
-				var fieldType = attribute.FieldType;
-
-				return new KeyValuePair<string, Type>(fieldName, fieldType);
-			});
 		}
 	}
 }
