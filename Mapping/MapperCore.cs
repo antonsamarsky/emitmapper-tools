@@ -12,13 +12,19 @@ namespace Mapping
 	/// </summary>
 	public class MapperCore
 	{
+        /// <summary>
+        /// The default configuration.
+        /// </summary>
         private static readonly IMappingConfigurator DefaultConfigurator;
 
 		/// <summary>
-		/// The list of configurations.
+        /// The list of mappers.
 		/// </summary>
         private static readonly List<object> Mappers;
 
+        /// <summary>
+        /// The list of configurations. 
+        /// </summary>
         private static readonly List<Tuple<Type,Type,IMappingConfigurator>> MappingConfigurations;
 
 		/// <summary>
@@ -123,13 +129,7 @@ namespace Mapping
 		/// </returns>
         protected virtual ObjectsMapper<TFrom, TTo> GetMapper<TFrom, TTo>()
 		{
-            var mapper = Mappers.FirstOrDefault(m =>
-            {
-                var typeFrom = m.GetType().GetGenericArguments()[0];
-                var typeTo = m.GetType().GetGenericArguments()[1];
-
-                return typeFrom.IsAssignableFrom(typeof(TFrom)) && typeTo.IsAssignableFrom(typeof(TTo));
-            });
+		    var mapper = Mappers.FirstOrDefault(m => m is ObjectsMapper<TFrom, TTo>) as ObjectsMapper<TFrom, TTo>;
 
             if (mapper == null)
             {
@@ -140,7 +140,7 @@ namespace Mapping
                 Mappers.Add(mapper);
             }
 
-            return (ObjectsMapper<TFrom, TTo>)mapper;
+            return mapper;
 		}
 	}
 }

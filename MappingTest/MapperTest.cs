@@ -59,7 +59,7 @@ namespace MappingTest
 				return value;
 			});
 
-			//Mapper.MapperCore.AddMappingConfiguration<Entity, Entity2>(mapConfig);
+			Mapper.MapperCore.AddConfiguration<Entity, Entity2>(mapConfig);
 
 			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
 
@@ -153,7 +153,7 @@ namespace MappingTest
 			var entities2 = Mapper.MapCollection<Entity, Entity>(entities).ToArray();
 
 			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / ((float)capacity)));
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
 
 			for (int i = 0; i < capacity; i++)
 			{
@@ -198,7 +198,7 @@ namespace MappingTest
 			var entities = Mapper.MapCollection<Table, Entity>(tables).ToArray();
 
 			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / ((float)capacity)));
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
 
 			for (int i = 0; i < capacity; i++)
 			{
@@ -228,30 +228,30 @@ namespace MappingTest
 				Price = (decimal)Math.Sqrt(i),
 			}).ToArray();
 
-			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+            Mapper.MapperCore.Initialize(new DomainMappingInitializator());
 
-			// Cold mapping
-			Mapper.MapCollection<Entity, Table>(new List<Entity> { new Entity() });
+            // Cold mapping
+            Mapper.MapCollection<Entity, Table>(new List<Entity> { new Entity() });
 
-			var stopWatch = new Stopwatch();
-			stopWatch.Start();
-			GC.Collect();
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            GC.Collect();
 
-			var tables = Mapper.MapCollection<Entity, Table>(entities).AsParallel().ToArray();
+			var tables = Mapper.MapCollection<Entity, Table>(entities).ToArray();
 
-			stopWatch.Stop();
-			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / ((float)capacity)));
+            stopWatch.Stop();
+            Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
 
-			for (int i = 0; i < capacity; i++)
-			{
-				var table = tables[i];
-				var entity = entities[i];
+            for (int i = 0; i < capacity; i++)
+            {
+                var table = tables[i];
+                var entity = entities[i];
 
-				Assert.AreEqual(entity.Name, table.Fields["order_name"]);
-				Assert.AreEqual(entity.Number, table.Fields["order_number"]);
-				Assert.AreEqual(entity.Price, table.Fields["order_price"]);
-				Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
-			}
+                Assert.AreEqual(entity.Name, table.Fields["order_name"]);
+                Assert.AreEqual(entity.Number, table.Fields["order_number"]);
+                Assert.AreEqual(entity.Price, table.Fields["order_price"]);
+                Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
+            }
 		}
 	}
 }

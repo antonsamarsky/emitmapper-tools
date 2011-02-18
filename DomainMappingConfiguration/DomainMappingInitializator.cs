@@ -1,5 +1,4 @@
 using Domain;
-using EmitMapper;
 using Mapping;
 
 namespace DomainMappingConfiguration

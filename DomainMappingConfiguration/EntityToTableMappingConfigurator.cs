@@ -109,7 +109,7 @@ namespace DomainMappingConfiguration
 					return;
 				}
 
-				object value = fd.Value.IsAssignableFrom(propertyType) ? propertyValue : this.ConvertValue(propertyValue, propertyType, fd.Value);
+				var value = fd.Value.IsAssignableFrom(propertyType) ? propertyValue : this.ConvertValue(propertyValue, propertyType, fd.Value);
 
 				if (value != null)
 				{
