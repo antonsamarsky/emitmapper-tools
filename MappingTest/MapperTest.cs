@@ -59,7 +59,7 @@ namespace MappingTest
 				return value;
 			});
 
-			Mapper.MapperCore.AddConfiguration<Entity, Entity2>(mapConfig);
+			Mapper.DataMapper.AddConfiguration<Entity, Entity2>(mapConfig);
 
 			Entity2 entity2 = Mapper.Map<Entity, Entity2>(entity);
 
@@ -84,7 +84,7 @@ namespace MappingTest
 				UserName = string.Empty,
 			};
 
-			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 			var table = Mapper.Map<Entity, Table>(entity);
 
 			Assert.AreEqual(entity.Id.ToString(), table.Fields["order_id"]);
@@ -114,7 +114,7 @@ namespace MappingTest
 				}
 			};
 
-			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 			var entity = Mapper.Map<Table, Entity>(table);
 
 			Assert.AreEqual(table.Fields["order_id"].ToString(), entity.Id.ToString());
@@ -141,7 +141,7 @@ namespace MappingTest
 				Price = (decimal)Math.Sqrt(i),
 			}).ToArray();
 
-			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 
 			// Cold mapping
 			Mapper.MapCollection<Entity, Entity2>(new List<Entity> { new Entity() });
@@ -186,7 +186,7 @@ namespace MappingTest
 				}
 			}).ToArray();
 
-			Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 
 			// Cold mapping
 			Mapper.MapCollection<Table, Entity>(new List<Table> { new Table { Fields = new Dictionary<string, object>() } });
@@ -228,30 +228,30 @@ namespace MappingTest
 				Price = (decimal)Math.Sqrt(i),
 			}).ToArray();
 
-            Mapper.MapperCore.Initialize(new DomainMappingInitializator());
+			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 
-            // Cold mapping
-            Mapper.MapCollection<Entity, Table>(new List<Entity> { new Entity() });
+			// Cold mapping
+			Mapper.MapCollection<Entity, Table>(new List<Entity> { new Entity() });
 
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            GC.Collect();
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
 
 			var tables = Mapper.MapCollection<Entity, Table>(entities).ToArray();
 
-            stopWatch.Stop();
-            Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
 
-            for (int i = 0; i < capacity; i++)
-            {
-                var table = tables[i];
-                var entity = entities[i];
+			for (int i = 0; i < capacity; i++)
+			{
+				var table = tables[i];
+				var entity = entities[i];
 
-                Assert.AreEqual(entity.Name, table.Fields["order_name"]);
-                Assert.AreEqual(entity.Number, table.Fields["order_number"]);
-                Assert.AreEqual(entity.Price, table.Fields["order_price"]);
-                Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
-            }
+				Assert.AreEqual(entity.Name, table.Fields["order_name"]);
+				Assert.AreEqual(entity.Number, table.Fields["order_number"]);
+				Assert.AreEqual(entity.Price, table.Fields["order_price"]);
+				Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
+			}
 		}
 	}
 }

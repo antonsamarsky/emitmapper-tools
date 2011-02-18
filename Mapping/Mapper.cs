@@ -7,23 +7,29 @@ namespace Mapping
 	/// </summary>
 	public static class Mapper
 	{
-		private static readonly MapperCore MappingCore;
+		/// <summary>
+		/// The mapper core instance.
+		/// </summary>
+		private static readonly MapperCore MapperInstance;
 
 		/// <summary>
 		/// Initializes static members of the <see cref="Mapper"/> class. 
 		/// </summary>
 		static Mapper()
 		{
-			MappingCore = new MapperCore();
+			MapperInstance = new MapperCore();
 		}
 
 		/// <summary>
-		/// Gets or sets the mapper core.
+		/// Gets the mapper core.
 		/// </summary>
 		/// <value>
 		/// The mapper core.
 		/// </value>
-		public static MapperCore MapperCore { get { return MappingCore; } }
+		public static MapperCore DataMapper
+		{
+			get { return MapperInstance; }
+		}
 
 		/// <summary>
 		/// Maps the specified from.
@@ -36,7 +42,7 @@ namespace Mapping
 		/// </returns>
 		public static TTo Map<TFrom, TTo>(TFrom @from)
 		{
-			return MappingCore.Map<TFrom, TTo>(@from);
+			return MapperInstance.Map<TFrom, TTo>(@from);
 		}
 
 		/// <summary>
@@ -51,7 +57,7 @@ namespace Mapping
 		/// </returns>
 		public static TTo Map<TFrom, TTo>(TFrom @from, TTo @to)
 		{
-			return MappingCore.Map(@from, @to);
+			return MapperInstance.Map(@from, @to);
 		}
 
 		/// <summary>
@@ -63,7 +69,7 @@ namespace Mapping
 		/// <returns>The output mapped collection.</returns>
 		public static IEnumerable<TTo> MapCollection<TFrom, TTo>(IEnumerable<TFrom> @from)
 		{
-			return MappingCore.MapCollection<TFrom, TTo>(@from);
+			return MapperInstance.MapCollection<TFrom, TTo>(@from);
 		}
 	}
 }

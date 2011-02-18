@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Diagnostics;
@@ -12,37 +13,37 @@ namespace Mapping
 	/// </summary>
 	public class MapperCore
 	{
-        /// <summary>
-        /// The default configuration.
-        /// </summary>
-        private static readonly IMappingConfigurator DefaultConfigurator;
+		/// <summary>
+		/// The default configuration.
+		/// </summary>
+		private static readonly IMappingConfigurator DefaultConfigurator;
 
 		/// <summary>
-        /// The list of mappers.
+		/// The list of mappers.
 		/// </summary>
-        private static readonly List<object> Mappers;
+		private static readonly BlockingCollection<object> Mappers;
 
-        /// <summary>
-        /// The list of configurations. 
-        /// </summary>
-        private static readonly List<Tuple<Type,Type,IMappingConfigurator>> MappingConfigurations;
+		/// <summary>
+		/// The list of configurations. 
+		/// </summary>
+		private static readonly BlockingCollection<Tuple<Type, Type, IMappingConfigurator>> MappingConfigurations;
 
 		/// <summary>
 		/// Initializes the <see cref="MapperCore"/> class.
 		/// </summary>
 		static MapperCore()
 		{
-            DefaultConfigurator = new DefaultMapConfig();
-            Mappers = new List<object>();
-            MappingConfigurations = new List<Tuple<Type, Type, IMappingConfigurator>>();
+			DefaultConfigurator = new DefaultMapConfig();
+			Mappers = new BlockingCollection<object>();
+			MappingConfigurations = new BlockingCollection<Tuple<Type, Type, IMappingConfigurator>>();
 		}
 
 		/// <summary>
 		/// Gets the configurators.
 		/// </summary>
-        public virtual List<Tuple<Type, Type, IMappingConfigurator>> Configurations
+		public virtual BlockingCollection<Tuple<Type, Type, IMappingConfigurator>> Configurations
 		{
-            get { return MappingConfigurations; }
+			get { return MappingConfigurations; }
 		}
 
 		/// <summary>
@@ -55,16 +56,16 @@ namespace Mapping
 		}
 
 		/// <summary>
-        /// Adds the configurator instance.
+		/// Adds the configurator instance.
 		/// </summary>
 		/// <typeparam name="TFrom">The type of from.</typeparam>
 		/// <typeparam name="TTo">The type of to.</typeparam>
-        /// <param name="configurator">The configurator.</param>
-        public virtual void AddConfiguration<TFrom, TTo>(IMappingConfigurator configurator)
+		/// <param name="configurator">The configurator.</param>
+		public virtual void AddConfiguration<TFrom, TTo>(IMappingConfigurator configurator)
 		{
-            Assert.IsNotNull(configurator, "configurator");
+			Assert.IsNotNull(configurator, "configurator");
 
-            MappingConfigurations.Add(new Tuple<Type, Type, IMappingConfigurator>(typeof(TFrom), typeof(TTo), configurator));
+			MappingConfigurations.Add(new Tuple<Type, Type, IMappingConfigurator>(typeof(TFrom), typeof(TTo), configurator));
 		}
 
 		/// <summary>
@@ -78,10 +79,10 @@ namespace Mapping
 		/// </returns>
 		public virtual TTo Map<TFrom, TTo>(TFrom @from)
 		{
-            Assert.ArgumentNotNull(@from, "@from");
+			Assert.ArgumentNotNull(@from, "@from");
 
-            var mapper = GetMapper<TFrom, TTo>();
-            return mapper.Map(@from);
+			var mapper = GetMapper<TFrom, TTo>();
+			return mapper.Map(@from);
 		}
 
 		/// <summary>
@@ -96,11 +97,11 @@ namespace Mapping
 		/// </returns>
 		public virtual TTo Map<TFrom, TTo>(TFrom @from, TTo @to)
 		{
-            Assert.ArgumentNotNull(@from, "@from");
-            Assert.ArgumentNotNull(@to, "@to");
+			Assert.ArgumentNotNull(@from, "@from");
+			Assert.ArgumentNotNull(@to, "@to");
 
-            var mapper = GetMapper<TFrom, TTo>();
-            return mapper.Map(@from, @to);
+			var mapper = GetMapper<TFrom, TTo>();
+			return mapper.Map(@from, @to);
 		}
 
 		/// <summary>
@@ -112,10 +113,10 @@ namespace Mapping
 		/// <returns>The output mapped collection.</returns>
 		public virtual IEnumerable<TTo> MapCollection<TFrom, TTo>(IEnumerable<TFrom> @from)
 		{
-            Assert.ArgumentNotNullOrEmpty(@from, "@from");
+			Assert.ArgumentNotNullOrEmpty(@from, "@from");
 
-            var mapper = GetMapper<TFrom, TTo>();
-            return mapper.MapEnum(@from);
+			var mapper = GetMapper<TFrom, TTo>();
+			return mapper.MapEnum(@from);
 		}
 
 		/// NOTE: Resolving from IoC can be added here.
@@ -127,20 +128,20 @@ namespace Mapping
 		/// <returns>
 		/// The configurator instance.
 		/// </returns>
-        protected virtual ObjectsMapper<TFrom, TTo> GetMapper<TFrom, TTo>()
+		protected virtual ObjectsMapper<TFrom, TTo> GetMapper<TFrom, TTo>()
 		{
-		    var mapper = Mappers.FirstOrDefault(m => m is ObjectsMapper<TFrom, TTo>) as ObjectsMapper<TFrom, TTo>;
+			var mapper = Mappers.FirstOrDefault(m => m is ObjectsMapper<TFrom, TTo>) as ObjectsMapper<TFrom, TTo>;
 
-            if (mapper == null)
-            {
-                var configuration = MappingConfigurations.Find(mp => mp.Item1.IsAssignableFrom(typeof(TFrom)) && mp.Item2.IsAssignableFrom(typeof(TTo)));
-                var config = configuration == null ? DefaultConfigurator : configuration.Item3;
+			if (mapper == null)
+			{
+				var configuration = MappingConfigurations.Where(mp => mp.Item1.IsAssignableFrom(typeof(TFrom)) && mp.Item2.IsAssignableFrom(typeof(TTo))).FirstOrDefault();
+				var config = configuration == null ? DefaultConfigurator : configuration.Item3;
 
-                mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(config);
-                Mappers.Add(mapper);
-            }
+				mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(config);
+				Mappers.Add(mapper);
+			}
 
-            return mapper;
+			return mapper;
 		}
 	}
 }

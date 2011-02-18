@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -20,12 +21,12 @@ namespace DomainMappingConfiguration
 		/// <summary>
 		/// The collection of attributes values.
 		/// </summary>
-		private readonly IDictionary<MemberInfo, List<KeyValuePair<string, Type>>> memberFieldsDescription;
+		private readonly ConcurrentDictionary<MemberInfo, List<KeyValuePair<string, Type>>> memberFieldsDescription;
 
 		/// <summary>
 		/// The converters collection.
 		/// </summary>
-		private readonly IDictionary<Type, TypeConverter> typeCoverters;
+		private readonly ConcurrentDictionary<Type, TypeConverter> typeCoverters;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="EntityToTableMappingConfigurator"/> class.
@@ -34,8 +35,8 @@ namespace DomainMappingConfiguration
 		{
 			ConstructBy(() => new Table { Fields = new Dictionary<string, object>() });
 
-			this.memberFieldsDescription = new Dictionary<MemberInfo, List<KeyValuePair<string, Type>>>();
-			this.typeCoverters = new Dictionary<Type, TypeConverter>();
+			this.memberFieldsDescription = new ConcurrentDictionary<MemberInfo, List<KeyValuePair<string, Type>>>();
+			this.typeCoverters = new ConcurrentDictionary<Type, TypeConverter>();
 		}
 
 		/// <summary>
@@ -71,21 +72,11 @@ namespace DomainMappingConfiguration
 		/// <returns>The fields description.</returns>
 		private List<KeyValuePair<string, Type>> GetFieldsDescription(MemberInfo memberInfo)
 		{
-			List<KeyValuePair<string, Type>> result;
-
-			if (memberFieldsDescription.TryGetValue(memberInfo, out result))
-			{
-				return result;
-			}
-
-			result = (from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
-							 let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? memberInfo.Name : attribute.FieldName
-							 let fieldType = attribute.FieldType ?? ((PropertyInfo)memberInfo).PropertyType
-							 select new KeyValuePair<string, Type>(fieldName, fieldType)).ToList();
-
-			memberFieldsDescription.Add(memberInfo, result);
-
-			return result;
+			return this.memberFieldsDescription.GetOrAdd(memberInfo, mi => 
+										(from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
+										let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? memberInfo.Name : attribute.FieldName
+										let fieldType = attribute.FieldType ?? ((PropertyInfo)memberInfo).PropertyType
+										select new KeyValuePair<string, Type>(fieldName, fieldType)).ToList());
 		}
 
 		/// <summary>
@@ -129,59 +120,17 @@ namespace DomainMappingConfiguration
 		{
 			object result = null;
 
-			TypeConverter typeConverter;
-			if (this.typeCoverters.TryGetValue(destinationType, out typeConverter))
+			TypeConverter typeConverter = this.typeCoverters.GetOrAdd(destinationType, TypeDescriptor.GetConverter);
+			if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
 			{
-				if (typeConverter.CanConvertFrom(sourceType))
-				{
-					result = typeConverter.ConvertFrom(sourceValue);
-				}
-				else
-				{
-					if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
-					{
-						if (typeConverter.CanConvertTo(destinationType))
-						{
-							result = typeConverter.ConvertTo(sourceValue, destinationType);
-						}
-					}
-				}
+				result = typeConverter.ConvertFrom(sourceValue);
 			}
 			else
 			{
-				if (this.typeCoverters.TryGetValue(sourceType, out typeConverter))
+				typeConverter = this.typeCoverters.GetOrAdd(sourceType, TypeDescriptor.GetConverter);
+				if (typeConverter != null && typeConverter.CanConvertTo(destinationType))
 				{
-					if (typeConverter.CanConvertTo(destinationType))
-					{
-						result = typeConverter.ConvertTo(sourceValue, destinationType);
-					}
-					else
-					{
-						typeConverter = TypeDescriptor.GetConverter(destinationType);
-						if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
-						{
-							result = typeConverter.ConvertFrom(sourceValue);
-							this.typeCoverters.Add(destinationType, typeConverter);
-						}
-					}
-				}
-				else
-				{
-					typeConverter = TypeDescriptor.GetConverter(sourceType);
-					if (typeConverter != null && typeConverter.CanConvertTo(destinationType))
-					{
-						result = typeConverter.ConvertTo(sourceValue, destinationType);
-						this.typeCoverters.Add(sourceType, typeConverter);
-					}
-					else
-					{
-						typeConverter = TypeDescriptor.GetConverter(destinationType);
-						if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
-						{
-							result = typeConverter.ConvertFrom(sourceValue);
-							this.typeCoverters.Add(destinationType, typeConverter);
-						}
-					}
+					result = typeConverter.ConvertTo(sourceValue, destinationType);
 				}
 			}
 
