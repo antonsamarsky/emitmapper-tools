@@ -7,20 +7,12 @@ namespace DomainMappingConfiguration
 	/// <summary>
 	/// The reflection util class.
 	/// </summary>
-	public class ReflectionUtil
+	public static class ReflectionUtil
 	{
 		/// <summary>
 		/// The converters collection.
 		/// </summary>
-		private static readonly ConcurrentDictionary<Type, TypeConverter> typeCoverters;
-
-		/// <summary>
-		/// Initializes the <see cref="ReflectionUtil"/> class.
-		/// </summary>
-		static ReflectionUtil()
-		{
-			typeCoverters = new ConcurrentDictionary<Type, TypeConverter>();
-		}
+		private static readonly ConcurrentDictionary<Type, TypeConverter> TypeCoverters = new ConcurrentDictionary<Type, TypeConverter>();
 
 		/// <summary>
 		/// Converts the value.
@@ -33,14 +25,14 @@ namespace DomainMappingConfiguration
 		{
 			object result = null;
 
-			TypeConverter typeConverter = typeCoverters.GetOrAdd(destinationType, TypeDescriptor.GetConverter);
+			TypeConverter typeConverter = TypeCoverters.GetOrAdd(destinationType, TypeDescriptor.GetConverter);
 			if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
 			{
 				result = typeConverter.ConvertFrom(sourceValue);
 			}
 			else
 			{
-				typeConverter = typeCoverters.GetOrAdd(sourceType, TypeDescriptor.GetConverter);
+				typeConverter = TypeCoverters.GetOrAdd(sourceType, TypeDescriptor.GetConverter);
 				if (typeConverter != null && typeConverter.CanConvertTo(destinationType))
 				{
 					result = typeConverter.ConvertTo(sourceValue, destinationType);

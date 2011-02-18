@@ -20,7 +20,7 @@ namespace MappingTest
 		/// Entities to entity mapping test.
 		/// </summary>
 		[Test]
-		public void EntityToEntityMappingTest()
+		public void _EntityToEntityMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -42,7 +42,7 @@ namespace MappingTest
 		/// Entities to entity variants mapping test.
 		/// </summary>
 		[Test]
-		public void EntityToEntityVariantsMappingTest()
+		public void _EntityToEntityVariantsMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -73,7 +73,7 @@ namespace MappingTest
 		/// Entities to table mapping test.
 		/// </summary>
 		[Test]
-		public void EntityToTableMappingTest()
+		public void _EntityToTableMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -99,7 +99,7 @@ namespace MappingTest
 		/// Tables to entity mapping test.
 		/// </summary>
 		[Test]
-		public void TableToEntityMappingTest()
+		public void _TableToEntityMappingTest()
 		{
 			var table = new Table
 			{

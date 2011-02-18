@@ -38,24 +38,52 @@ namespace DomainMappingConfiguration
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			return FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(to)
-						.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
-						.Select(destinationMember => (IMappingOperation)new DestWriteOperation
-						{
-							Destination = new MemberDescriptor(destinationMember),
-							Getter = (ValueGetter<object>)((item, state) =>
-							{
-								if (item == null)
-								{
-									return ValueToWrite<object>.Skip();
-								}
+			return this.FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(to)
+									.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
+									.Select(destinationMember => (IMappingOperation)new DestWriteOperation
+									{
+										Destination = new MemberDescriptor(destinationMember),
+										Getter = (ValueGetter<object>)((item, state) =>
+										{
+											if (item == null || !(item is Table) || !(destinationMember is PropertyInfo))
+											{
+												return ValueToWrite<object>.Skip();
+											}
 
-								var fieldDescription = this.GetFieldDescription(destinationMember);
-								var destinationMemberValue = this.ConvertFieldToDestinationProperty(item as Table, fieldDescription.Key, fieldDescription.Value, destinationMember as PropertyInfo);
+											var fieldDescription = this.GetFieldDescription(destinationMember);
+											var destinationMemberValue = ConvertFieldToDestinationProperty((Table)item, (PropertyInfo)destinationMember, fieldDescription);
 
-								return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
-							})
-						})).ToArray();
+											return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
+										})
+									})).ToArray();
+		}
+
+		/// <summary>
+		/// Converts the field to destination property.
+		/// </summary>
+		/// <param name="table">The table.</param>
+		/// <param name="destinationProperty">The destination property.</param>
+		/// <param name="fieldDescription">The field description.</param>
+		/// <returns>
+		/// The conversion result.
+		/// </returns>
+		protected static object ConvertFieldToDestinationProperty(Table table, PropertyInfo destinationProperty, KeyValuePair<string, Type> fieldDescription)
+		{
+			if (table == null || table.Fields == null || string.IsNullOrEmpty(fieldDescription.Key))
+			{
+				return null;
+			}
+
+			object fieldValue;
+			if (!table.Fields.TryGetValue(fieldDescription.Key, out fieldValue) || fieldValue == null)
+			{
+				return null;
+			}
+
+			var sourceType = fieldDescription.Value ?? fieldValue.GetType();
+			var destinationType = destinationProperty.PropertyType;
+
+			return destinationType.IsAssignableFrom(sourceType) ? fieldValue : ReflectionUtil.ConvertValue(fieldValue, sourceType, destinationType);
 		}
 
 		/// <summary>
@@ -63,7 +91,7 @@ namespace DomainMappingConfiguration
 		/// </summary>
 		/// <param name="memberInfo">The member info.</param>
 		/// <returns>The field description.</returns>
-		private KeyValuePair<string, Type> GetFieldDescription(MemberInfo memberInfo)
+		protected virtual KeyValuePair<string, Type> GetFieldDescription(MemberInfo memberInfo)
 		{
 			return this.memberFieldDescription.GetOrAdd(memberInfo, mi =>
 			{
@@ -79,38 +107,6 @@ namespace DomainMappingConfiguration
 
 				return new KeyValuePair<string, Type>(fieldName, fieldType);
 			});
-		}
-
-		/// <summary>
-		/// Converts the field to destination property.
-		/// </summary>
-		/// <param name="table">The table.</param>
-		/// <param name="fieldName">Name of the field.</param>
-		/// <param name="fieldType">Type of the field.</param>
-		/// <param name="destinationProperty">The destination property.</param>
-		/// <returns>The conversion result.</returns>
-		private object ConvertFieldToDestinationProperty(Table table, string fieldName, Type fieldType, PropertyInfo destinationProperty)
-		{
-			if (table == null)
-			{
-				return null;
-			}
-
-			if (string.IsNullOrEmpty(fieldName))
-			{
-				return null;
-			}
-
-			object fieldValue;
-			if (!table.Fields.TryGetValue(fieldName, out fieldValue) || fieldValue == null)
-			{
-				return null;
-			}
-
-			var sourceType = fieldType ?? fieldValue.GetType();
-			var destinationType = destinationProperty.PropertyType;
-
-			return destinationType.IsAssignableFrom(sourceType) ? fieldValue : ReflectionUtil.ConvertValue(fieldValue, sourceType, destinationType);
 		}
 	}
 }

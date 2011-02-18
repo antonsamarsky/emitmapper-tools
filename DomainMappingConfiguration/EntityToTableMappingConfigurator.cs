@@ -40,36 +40,22 @@ namespace DomainMappingConfiguration
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			return FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(from)
-											.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetGetMethod() != null)
-											.Select(sourceMember => (IMappingOperation)new SrcReadOperation
+			return this.FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(from)
+									.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetGetMethod() != null)
+									.Select(sourceMember => (IMappingOperation)new SrcReadOperation
+									{
+										Source = new MemberDescriptor(sourceMember),
+										Setter = (destination, value, state) =>
+										{
+											if (destination == null || value == null || !(sourceMember is PropertyInfo) || !(destination is Table))
 											{
-												Source = new MemberDescriptor(sourceMember),
-												Setter = (destination, value, state) =>
-												{
-													if (destination == null || value == null)
-													{
-														return;
-													}
+												return;
+											}
 
-													var fieldsDescription = this.GetFieldsDescription(sourceMember);
-													ConvertSourcePropertyToFields(((PropertyInfo)sourceMember).PropertyType, value, destination as Table, fieldsDescription);
-												}
-											})).ToArray();
-		}
-
-		/// <summary>
-		/// Gets the fields description.
-		/// </summary>
-		/// <param name="memberInfo">The member info.</param>
-		/// <returns>The fields description.</returns>
-		private List<KeyValuePair<string, Type>> GetFieldsDescription(MemberInfo memberInfo)
-		{
-			return this.memberFieldsDescription.GetOrAdd(memberInfo, mi => 
-										(from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
-										let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? memberInfo.Name : attribute.FieldName
-										let fieldType = attribute.FieldType ?? ((PropertyInfo)memberInfo).PropertyType
-										select new KeyValuePair<string, Type>(fieldName, fieldType)).ToList());
+											var fieldsDescription = this.GetFieldsDescription(sourceMember);
+											ConvertSourcePropertyToFields(((PropertyInfo)sourceMember).PropertyType, value, (Table)destination, fieldsDescription);
+										}
+									})).ToArray();
 		}
 
 		/// <summary>
@@ -77,11 +63,11 @@ namespace DomainMappingConfiguration
 		/// </summary>
 		/// <param name="propertyType">Type of the property.</param>
 		/// <param name="propertyValue">The property value.</param>
-		/// <param name="table">The table.</param>
+		/// <param name="table">The dictionary.</param>
 		/// <param name="fieldsDescription">The fields description.</param>
-		private void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, List<KeyValuePair<string, Type>> fieldsDescription)
+		protected static void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, List<KeyValuePair<string, Type>> fieldsDescription)
 		{
-			if (table == null)
+			if (table == null || table.Fields == null)
 			{
 				return;
 			}
@@ -102,5 +88,24 @@ namespace DomainMappingConfiguration
 			});
 		}
 
+		/// <summary>
+		/// Gets the fields description.
+		/// </summary>
+		/// <param name="memberInfo">The member info.</param>
+		/// <returns>
+		/// The fields description.
+		/// </returns>
+		protected virtual List<KeyValuePair<string, Type>> GetFieldsDescription(MemberInfo memberInfo)
+		{
+			return this.memberFieldsDescription.GetOrAdd(memberInfo, mi =>
+			{
+				var attributes = Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>();
+
+				return (from attribute in attributes
+								let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? mi.Name : attribute.FieldName
+								let fieldType = attribute.FieldType ?? ((PropertyInfo)mi).PropertyType
+								select new KeyValuePair<string, Type>(fieldName, fieldType)).ToList();
+			});
+		}
 	}
 }
