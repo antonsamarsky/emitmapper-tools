@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using Domain;
@@ -24,17 +23,11 @@ namespace DomainMappingConfiguration
 		private readonly ConcurrentDictionary<MemberInfo, KeyValuePair<string, Type>> memberFieldDescription;
 
 		/// <summary>
-		/// The converters collection.
-		/// </summary>
-		private readonly ConcurrentDictionary<Type, TypeConverter> typeCoverters;
-
-		/// <summary>
 		/// Initializes a new instance of the <see cref="TableToEntityMappingConfigurator"/> class.
 		/// </summary>
 		public TableToEntityMappingConfigurator()
 		{
 			this.memberFieldDescription = new ConcurrentDictionary<MemberInfo, KeyValuePair<string, Type>>();
-			this.typeCoverters = new ConcurrentDictionary<Type, TypeConverter>();
 		}
 
 		/// <summary>
@@ -117,35 +110,7 @@ namespace DomainMappingConfiguration
 			var sourceType = fieldType ?? fieldValue.GetType();
 			var destinationType = destinationProperty.PropertyType;
 
-			return destinationType.IsAssignableFrom(sourceType) ? fieldValue : this.ConvertValue(fieldValue, sourceType, destinationType);
-		}
-
-		/// <summary>
-		/// Converts the value.
-		/// </summary>
-		/// <param name="sourceValue">The source value.</param>
-		/// <param name="sourceType">Type of the source.</param>
-		/// <param name="destinationType">Type of the destination.</param>
-		/// <returns>The converted value.</returns>
-		private object ConvertValue(object sourceValue, Type sourceType, Type destinationType)
-		{
-			object result = null;
-
-			TypeConverter typeConverter = this.typeCoverters.GetOrAdd(destinationType, TypeDescriptor.GetConverter);
-			if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
-			{
-				result = typeConverter.ConvertFrom(sourceValue);
-			}
-			else
-			{
-				typeConverter = this.typeCoverters.GetOrAdd(sourceType, TypeDescriptor.GetConverter);
-				if (typeConverter != null && typeConverter.CanConvertTo(destinationType))
-				{
-					result = typeConverter.ConvertTo(sourceValue, destinationType);
-				}
-			}
-
-			return result;
+			return destinationType.IsAssignableFrom(sourceType) ? fieldValue : ReflectionUtil.ConvertValue(fieldValue, sourceType, destinationType);
 		}
 	}
 }

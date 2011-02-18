@@ -41,6 +41,7 @@
     <Compile Include="DomainMappingInitializator.cs" />
     <Compile Include="EntityToTableMappingConfigurator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReflectionUtil.cs" />
     <Compile Include="TableToEntityMappingConfigurator.cs" />
   </ItemGroup>
   <ItemGroup>
