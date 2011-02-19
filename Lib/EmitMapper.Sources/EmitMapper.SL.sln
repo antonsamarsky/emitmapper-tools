@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapper.SL", "Silverlight\EmitMapper.SL\EmitMapper.SL.csproj", "{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapperTests.SL", "Silverlight\EmitMapperTests.SL\EmitMapperTests.SL.csproj", "{09309D26-E61C-4810-BA9D-4994B53E375C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nunit.framework.sl.dll", "Silverlight\NUnit.SL\framework.sl\nunit.framework.sl.dll.csproj", "{83DD7E12-A705-4DBA-9D71-09C8973D9382}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsLauncher.SL", "Silverlight\TestsLauncher.SL\TestsLauncher.SL.csproj", "{193B24C6-ECD2-411B-8304-332E58E32785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsLauncher.SL.Web", "Silverlight\TestsLauncher.SL.Web\TestsLauncher.SL.Web.csproj", "{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

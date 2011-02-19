@@ -1,0 +1,119 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{1821C660-299A-4BEE-8828-32911AE7F42F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SamplesTests", "SamplesTests\SamplesTests.csproj", "{A98EB892-165D-44D8-90E9-773AE9A45849}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightDataAccess", "Samples\LightDataAccess\LightDataAccess.csproj", "{A9E20509-B876-45AC-A377-B9AF1FBDE8DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMConfigurations", "Samples\EMConfigurations\EMConfigurations.csproj", "{F9221CD0-0B56-4CA1-857B-7B19DC509D59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapper", "EmitMapper\EmitMapper.csproj", "{1B6AB0C8-B8E2-47AC-89E8-8B029EA1BCA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{F2666E8C-0273-4F7E-A2AA-65F7C8A95E8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapper.Mvc.Net", "Samples\EmitMapper.Mvc.Net\EmitMapper.Mvc.Net.csproj", "{75C6A518-5A9B-48A4-B267-ECE474041977}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mvc", "Mvc", "{75F3A083-3C58-4C55-B251-AF6C3FCC2FCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0D33525-2360-43C0-9866-BE507A0B069D}"
+	ProjectSection(SolutionItems) = preProject
+		EmitMapper.vsmdi = EmitMapper.vsmdi
+		EmitMapper1.vsmdi = EmitMapper1.vsmdi
+		LocalTestRun.testrunconfig = LocalTestRun.testrunconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapperTests.NUnit", "EmitMapperTests.NUnit\EmitMapperTests.NUnit.csproj", "{253E7488-760E-4079-A13C-A8C7489B8F97}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Silverlight", "Silverlight", "{B4055897-34F7-4D04-A202-21FEC1C8005E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapper.SL", "Silverlight\EmitMapper.SL\EmitMapper.SL.csproj", "{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nunit.framework.sl.dll", "Silverlight\NUnit.SL\framework.sl\nunit.framework.sl.dll.csproj", "{83DD7E12-A705-4DBA-9D71-09C8973D9382}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmitMapperTests.SL", "Silverlight\EmitMapperTests.SL\EmitMapperTests.SL.csproj", "{09309D26-E61C-4810-BA9D-4994B53E375C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsLauncher.SL", "Silverlight\TestsLauncher.SL\TestsLauncher.SL.csproj", "{193B24C6-ECD2-411B-8304-332E58E32785}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsLauncher.SL.Web", "Silverlight\TestsLauncher.SL.Web\TestsLauncher.SL.Web.csproj", "{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}"
+EndProject
+Global
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
+	EndGlobalSection
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = EmitMapper1.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A98EB892-165D-44D8-90E9-773AE9A45849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A98EB892-165D-44D8-90E9-773AE9A45849}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A98EB892-165D-44D8-90E9-773AE9A45849}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A98EB892-165D-44D8-90E9-773AE9A45849}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9E20509-B876-45AC-A377-B9AF1FBDE8DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9E20509-B876-45AC-A377-B9AF1FBDE8DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9E20509-B876-45AC-A377-B9AF1FBDE8DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9E20509-B876-45AC-A377-B9AF1FBDE8DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9221CD0-0B56-4CA1-857B-7B19DC509D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9221CD0-0B56-4CA1-857B-7B19DC509D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9221CD0-0B56-4CA1-857B-7B19DC509D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9221CD0-0B56-4CA1-857B-7B19DC509D59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B6AB0C8-B8E2-47AC-89E8-8B029EA1BCA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B6AB0C8-B8E2-47AC-89E8-8B029EA1BCA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B6AB0C8-B8E2-47AC-89E8-8B029EA1BCA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B6AB0C8-B8E2-47AC-89E8-8B029EA1BCA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2666E8C-0273-4F7E-A2AA-65F7C8A95E8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2666E8C-0273-4F7E-A2AA-65F7C8A95E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2666E8C-0273-4F7E-A2AA-65F7C8A95E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2666E8C-0273-4F7E-A2AA-65F7C8A95E8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75C6A518-5A9B-48A4-B267-ECE474041977}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C6A518-5A9B-48A4-B267-ECE474041977}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C6A518-5A9B-48A4-B267-ECE474041977}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C6A518-5A9B-48A4-B267-ECE474041977}.Release|Any CPU.Build.0 = Release|Any CPU
+		{253E7488-760E-4079-A13C-A8C7489B8F97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{253E7488-760E-4079-A13C-A8C7489B8F97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{253E7488-760E-4079-A13C-A8C7489B8F97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{253E7488-760E-4079-A13C-A8C7489B8F97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09309D26-E61C-4810-BA9D-4994B53E375C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193B24C6-ECD2-411B-8304-332E58E32785}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A98EB892-165D-44D8-90E9-773AE9A45849} = {1821C660-299A-4BEE-8828-32911AE7F42F}
+		{A9E20509-B876-45AC-A377-B9AF1FBDE8DA} = {1821C660-299A-4BEE-8828-32911AE7F42F}
+		{F9221CD0-0B56-4CA1-857B-7B19DC509D59} = {1821C660-299A-4BEE-8828-32911AE7F42F}
+		{F2666E8C-0273-4F7E-A2AA-65F7C8A95E8C} = {1821C660-299A-4BEE-8828-32911AE7F42F}
+		{75F3A083-3C58-4C55-B251-AF6C3FCC2FCB} = {1821C660-299A-4BEE-8828-32911AE7F42F}
+		{75C6A518-5A9B-48A4-B267-ECE474041977} = {75F3A083-3C58-4C55-B251-AF6C3FCC2FCB}
+		{03C53360-6930-4CAF-B4D9-349F1DAFFE6B} = {B4055897-34F7-4D04-A202-21FEC1C8005E}
+		{83DD7E12-A705-4DBA-9D71-09C8973D9382} = {B4055897-34F7-4D04-A202-21FEC1C8005E}
+		{09309D26-E61C-4810-BA9D-4994B53E375C} = {B4055897-34F7-4D04-A202-21FEC1C8005E}
+		{193B24C6-ECD2-411B-8304-332E58E32785} = {B4055897-34F7-4D04-A202-21FEC1C8005E}
+		{CA029F3D-5604-45C8-A152-2ACD3B93B5D9} = {B4055897-34F7-4D04-A202-21FEC1C8005E}
+	EndGlobalSection
+EndGlobal

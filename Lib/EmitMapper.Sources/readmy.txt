@@ -1,0 +1,1 @@
+All the information and documentation about EmitMapper library is available at the following link: http://emitmapper.codeplex.com/
