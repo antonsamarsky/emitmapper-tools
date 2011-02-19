@@ -57,7 +57,7 @@ namespace DomainMappingConfiguration
 		/// <param name="sourceValue">The property value.</param>
 		/// <param name="container">The container.</param>
 		/// <param name="fieldsDescription">The fields description.</param>
-		private static void ConvertSourcePropertyToFields(object sourceValue, Type sourceType, DataContainer container, List<KeyValuePair<string, Type>> fieldsDescription)
+		private static void ConvertSourcePropertyToFields(object sourceValue, Type sourceType, DataContainer container, List<Tuple<string, Type>> fieldsDescription)
 		{
 			if (container == null || container.Fields == null)
 			{
@@ -66,16 +66,16 @@ namespace DomainMappingConfiguration
 
 			fieldsDescription.ForEach(fd =>
 			{
-				if (container.Fields.ContainsKey(fd.Key))
+				if (container.Fields.ContainsKey(fd.Item1))
 				{
 					return;
 				}
 
-				var value = ReflectionUtil.ConvertValue(sourceValue, sourceType, fd.Value);
+				var value = ReflectionUtil.ConvertValue(sourceValue, sourceType, fd.Item2);
 
 				if (value != null)
 				{
-					container.Fields.Add(fd.Key, value);
+					container.Fields.Add(fd.Item1, value);
 				}
 			});
 		}

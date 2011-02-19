@@ -14,7 +14,7 @@ namespace DomainMappingConfiguration
 		/// <summary>
 		/// The converters collection.
 		/// </summary>
-		private static readonly ConcurrentDictionary<Type, TypeConverter> TypeCoverters = new ConcurrentDictionary<Type, TypeConverter>();
+		private static readonly ConcurrentDictionary<Type, TypeConverter> TypeConverters = new ConcurrentDictionary<Type, TypeConverter>();
 
 		/// <summary>
 		/// The collection of not IConvertible types.
@@ -54,14 +54,14 @@ namespace DomainMappingConfiguration
 
 			object result = null;
 
-			var typeConverter = TypeCoverters.GetOrAdd(destinationType, TypeDescriptor.GetConverter);
+			var typeConverter = TypeConverters.GetOrAdd(destinationType, TypeDescriptor.GetConverter);
 			if (typeConverter != null && typeConverter.CanConvertFrom(sourceType))
 			{
 				result = typeConverter.ConvertFrom(sourceValue);
 			}
 			else
 			{
-				typeConverter = TypeCoverters.GetOrAdd(sourceType, TypeDescriptor.GetConverter);
+				typeConverter = TypeConverters.GetOrAdd(sourceType, TypeDescriptor.GetConverter);
 				if (typeConverter != null && typeConverter.CanConvertTo(destinationType))
 				{
 					result = typeConverter.ConvertTo(sourceValue, destinationType);

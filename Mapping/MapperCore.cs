@@ -21,12 +21,12 @@ namespace Mapping
 		/// <summary>
 		/// The list of mappers.
 		/// </summary>
-		private static readonly BlockingCollection<object> Mappers;
+		private static readonly ConcurrentBag<object> Mappers;
 
 		/// <summary>
 		/// The list of configurations. 
 		/// </summary>
-		private static readonly BlockingCollection<Tuple<Type, Type, IMappingConfigurator>> MappingConfigurations;
+		private static readonly ConcurrentBag<Tuple<Type, Type, IMappingConfigurator>> MappingConfigurations;
 
 		/// <summary>
 		/// Initializes the <see cref="MapperCore"/> class.
@@ -34,16 +34,16 @@ namespace Mapping
 		static MapperCore()
 		{
 			DefaultConfigurator = new DefaultMapConfig();
-			Mappers = new BlockingCollection<object>();
-			MappingConfigurations = new BlockingCollection<Tuple<Type, Type, IMappingConfigurator>>();
+			Mappers = new ConcurrentBag<object>();
+			MappingConfigurations = new ConcurrentBag<Tuple<Type, Type, IMappingConfigurator>>();
 		}
 
 		/// <summary>
 		/// Gets the configurators.
 		/// </summary>
-		public virtual BlockingCollection<Tuple<Type, Type, IMappingConfigurator>> Configurations
+		public virtual Tuple<Type, Type, IMappingConfigurator>[] Configurations
 		{
-			get { return MappingConfigurations; }
+			get { return MappingConfigurations.ToArray(); }
 		}
 
 		/// <summary>
@@ -138,6 +138,7 @@ namespace Mapping
 				var config = configuration == null ? DefaultConfigurator : configuration.Item3;
 
 				mapper = ObjectMapperManager.DefaultInstance.GetMapper<TFrom, TTo>(config);
+
 				Mappers.Add(mapper);
 			}
 

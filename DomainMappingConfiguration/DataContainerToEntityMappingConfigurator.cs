@@ -53,20 +53,20 @@ namespace DomainMappingConfiguration
 		/// <returns>
 		/// The conversion result.
 		/// </returns>
-		private static object ConvertFieldToDestinationProperty(DataContainer container, PropertyInfo destinationProperty, KeyValuePair<string, Type> fieldDescription)
+		private static object ConvertFieldToDestinationProperty(DataContainer container, PropertyInfo destinationProperty, Tuple<string, Type> fieldDescription)
 		{
-			if (container == null || container.Fields == null || string.IsNullOrEmpty(fieldDescription.Key))
+			if (container == null || container.Fields == null || string.IsNullOrEmpty(fieldDescription.Item1))
 			{
 				return null;
 			}
 
 			object sourceValue;
-			if (!container.Fields.TryGetValue(fieldDescription.Key, out sourceValue) || sourceValue == null)
+			if (!container.Fields.TryGetValue(fieldDescription.Item1, out sourceValue) || sourceValue == null)
 			{
 				return null;
 			}
 
-			var sourceType = fieldDescription.Value ?? sourceValue.GetType();
+			var sourceType = fieldDescription.Item2 ?? sourceValue.GetType();
 			var destinationType = destinationProperty.PropertyType;
 
 			return ReflectionUtil.ConvertValue(sourceValue, sourceType, destinationType);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Domain;
 using DomainMappingConfiguration;
 using EmitMapper.MappingConfiguration;
@@ -278,6 +279,27 @@ namespace MappingTest
 				Assert.AreEqual(entity.Price, container.Fields["order_price"]);
 				Assert.AreEqual(entity.UserName, container.Fields["UserName"]);
 			}
+		}
+
+		[TestCase(1000)]
+		public void ConcurrentMappingTest(int numberOfThreads)
+		{
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
+			var tasks = new List<Task>();
+			for (int i = 0; i < numberOfThreads; i++)
+			{
+				tasks.Add(Task.Factory.StartNew(_DataContainerToEntityMappingTest));
+				tasks.Add(Task.Factory.StartNew(_EntityToDataContainerMappingTest));
+				tasks.Add(Task.Factory.StartNew(() => EntityToDataContainerMappingCollectionTest(numberOfThreads)));
+				tasks.Add(Task.Factory.StartNew(() => DataContainerToEntityMappingCollectionTest(numberOfThreads)));
+			}
+			Task.WaitAll(tasks.ToArray());
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the concurrent tests took: {0} ms.", stopWatch.ElapsedMilliseconds));
 		}
 	}
 }
