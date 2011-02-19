@@ -37,6 +37,7 @@
   <ItemGroup>
     <Compile Include="Entity.cs" />
     <Compile Include="Entity2.cs" />
+    <Compile Include="EntityChild.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Table.cs" />
   </ItemGroup>

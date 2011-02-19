@@ -16,6 +16,49 @@ namespace MappingTest
 	[TestFixture]
 	public class MapperTest
 	{
+        /*
+        [Test]
+        public void _AnonymousToEntityTest()
+        {
+            var anonymousType = new
+            {
+                Id = Guid.NewGuid(),
+                Name = "Entity Name",
+                Number = 134567,
+                Price = 100.500m,
+            };
+
+            Entity entity = Mapper.Map(anonymousType, new Entity());
+
+            Assert.AreEqual(anonymousType.Id, entity.Id);
+            Assert.AreEqual(anonymousType.Name, entity.Name);
+            Assert.AreEqual(anonymousType.Number, entity.Number);
+            Assert.AreEqual(anonymousType.Price, entity.Price);
+        }
+        */
+
+	    [Test]
+        public void _EntityChildToTableTest()
+        {
+            var entityChild = new EntityChild
+                                  {
+                                      Id = Guid.NewGuid(),
+                                      Name = "Entity Name",
+                                      Number = 134567,
+                                      Price = 100.500m,
+                                      AdditionalValue = "Add"
+                                  };
+            Mapper.DataMapper.Initialize(new DomainMappingInitializator());
+            var table = Mapper.Map<EntityChild, Table>(entityChild);
+
+            Assert.AreEqual(entityChild.Id.ToString(), table.Fields["order_id"]);
+            Assert.AreEqual(entityChild.Number, table.Fields["order_number"]);
+            Assert.AreEqual(entityChild.Number, table.Fields["order_number_2"]);
+            Assert.AreEqual(entityChild.Name, table.Fields["order_name"]);
+            Assert.AreEqual(entityChild.Price, table.Fields["order_price"]);
+            Assert.AreEqual(entityChild.AdditionalValue, table.Fields["AdditionalValue"]);
+        }
+
 		/// <summary>
 		/// Entities to entity mapping test.
 		/// </summary>
@@ -216,7 +259,7 @@ namespace MappingTest
 		/// Entities to table mapping collection test.
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
-		[TestCase(10000)]
+		[TestCase(1000000)]
 		public void EntityToTableMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
