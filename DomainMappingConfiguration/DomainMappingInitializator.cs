@@ -1,4 +1,5 @@
 using Domain;
+using DomainMappingConfiguration.Configurators;
 using Mapping;
 
 namespace DomainMappingConfiguration
@@ -14,8 +15,8 @@ namespace DomainMappingConfiguration
 		/// <param name="mapperCore">The mapper core.</param>
 		public void ConfigureMapper(MapperCore mapperCore)
 		{
-			mapperCore.AddConfiguration<DataContainer, object>(new DataContainerToEntityMappingConfigurator());
-			mapperCore.AddConfiguration<object, DataContainer>(new EntityToDataContainerMappingConfigurator());
+			mapperCore.AddConfiguration<DataContainer, object>(new DataContainerToEntityPropertyMappingConfigurator());
+			mapperCore.AddConfiguration<object, DataContainer>(new EntityToDataContainerPropertyMappingConfigurator());
 		}
 	}
 }

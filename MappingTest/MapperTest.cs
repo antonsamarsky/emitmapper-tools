@@ -281,8 +281,12 @@ namespace MappingTest
 			}
 		}
 
+		/// <summary>
+		///  Running tests concurrently
+		/// </summary>
+		/// <param name="numberOfThreads">The number of threads</param>
 		[TestCase(1000)]
-		public void ConcurrentMappingTest(int numberOfThreads)
+		public void ZConcurrentMappingTest(int numberOfThreads)
 		{
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();

@@ -7,19 +7,18 @@ using EmitMapper.MappingConfiguration;
 using EmitMapper.MappingConfiguration.MappingOperations;
 using EmitMapper.Utils;
 using MappingDefinitions;
-using MemberDescriptor = EmitMapper.MappingConfiguration.MemberDescriptor;
 
-namespace DomainMappingConfiguration
+namespace DomainMappingConfiguration.Configurators
 {
 	/// <summary>
 	/// The item configuration.
 	/// </summary>
-	public class EntityToDataContainerMappingConfigurator : DefaultMapConfig
+	public class EntityToDataContainerPropertyMappingConfigurator : DefaultMapConfig
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="EntityToDataContainerMappingConfigurator"/> class.
+		/// Initializes a new instance of the <see cref="EntityToDataContainerPropertyMappingConfigurator"/> class.
 		/// </summary>
-		public EntityToDataContainerMappingConfigurator()
+		public EntityToDataContainerPropertyMappingConfigurator()
 		{
 			ConstructBy(() => new DataContainer { Fields = new Dictionary<string, object>() });
 		}
@@ -39,13 +38,14 @@ namespace DomainMappingConfiguration
 										Source = new MemberDescriptor(sourceMember),
 										Setter = (destination, value, state) =>
 										{
-											if (destination == null || value == null || !(sourceMember is PropertyInfo) || !(destination is DataContainer))
+											if (destination == null || value == null || !(destination is DataContainer))
 											{
 												return;
 											}
 
+											var sourceType = sourceMember is PropertyInfo ? ((PropertyInfo) sourceMember).PropertyType : ((FieldInfo)sourceMember).FieldType;
 											var fieldsDescription = DataAttributeManager.GetDataMemberDefinition(sourceMember);
-											ConvertSourcePropertyToFields(value, ((PropertyInfo)sourceMember).PropertyType, (DataContainer)destination, fieldsDescription);
+											ConvertSourcePropertyToFields(value, sourceType, (DataContainer)destination, fieldsDescription);
 										}
 									})).ToArray();
 		}
