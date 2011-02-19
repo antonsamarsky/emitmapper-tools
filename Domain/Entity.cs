@@ -21,5 +21,8 @@ namespace Domain
 
 		[DataMember]
 		public string UserName { get; set; }
+
+		[DataMember(FieldType = typeof(string))]
+		public DateTime Time { get; set; }
 	}
 }

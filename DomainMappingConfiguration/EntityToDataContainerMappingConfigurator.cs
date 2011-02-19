@@ -14,14 +14,14 @@ namespace DomainMappingConfiguration
 	/// <summary>
 	/// The item configuration.
 	/// </summary>
-	public class EntityToTableMappingConfigurator : DefaultMapConfig
+	public class EntityToDataContainerMappingConfigurator : DefaultMapConfig
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="EntityToTableMappingConfigurator"/> class.
+		/// Initializes a new instance of the <see cref="EntityToDataContainerMappingConfigurator"/> class.
 		/// </summary>
-		public EntityToTableMappingConfigurator()
+		public EntityToDataContainerMappingConfigurator()
 		{
-			ConstructBy(() => new Table { Fields = new Dictionary<string, object>() });
+			ConstructBy(() => new DataContainer { Fields = new Dictionary<string, object>() });
 		}
 
 		/// <summary>
@@ -39,13 +39,13 @@ namespace DomainMappingConfiguration
 										Source = new MemberDescriptor(sourceMember),
 										Setter = (destination, value, state) =>
 										{
-											if (destination == null || value == null || !(sourceMember is PropertyInfo) || !(destination is Table))
+											if (destination == null || value == null || !(sourceMember is PropertyInfo) || !(destination is DataContainer))
 											{
 												return;
 											}
 
 											var fieldsDescription = DataAttributeManager.GetDataMemberDefinition(sourceMember);
-											ConvertSourcePropertyToFields(((PropertyInfo)sourceMember).PropertyType, value, (Table)destination, fieldsDescription);
+											ConvertSourcePropertyToFields(value, ((PropertyInfo)sourceMember).PropertyType, (DataContainer)destination, fieldsDescription);
 										}
 									})).ToArray();
 		}
@@ -53,29 +53,29 @@ namespace DomainMappingConfiguration
 		/// <summary>
 		/// Converts the source property to fields.
 		/// </summary>
-		/// <param name="propertyType">Type of the property.</param>
-		/// <param name="propertyValue">The property value.</param>
-		/// <param name="table">The dictionary.</param>
+		/// <param name="sourceType">Type of the property.</param>
+		/// <param name="sourceValue">The property value.</param>
+		/// <param name="container">The container.</param>
 		/// <param name="fieldsDescription">The fields description.</param>
-		private static void ConvertSourcePropertyToFields(Type propertyType, object propertyValue, Table table, List<KeyValuePair<string, Type>> fieldsDescription)
+		private static void ConvertSourcePropertyToFields(object sourceValue, Type sourceType, DataContainer container, List<KeyValuePair<string, Type>> fieldsDescription)
 		{
-			if (table == null || table.Fields == null)
+			if (container == null || container.Fields == null)
 			{
 				return;
 			}
 
 			fieldsDescription.ForEach(fd =>
 			{
-				if (table.Fields.ContainsKey(fd.Key))
+				if (container.Fields.ContainsKey(fd.Key))
 				{
 					return;
 				}
 
-				var value = fd.Value.IsAssignableFrom(propertyType) ? propertyValue : ReflectionUtil.ConvertValue(propertyValue, propertyType, fd.Value);
+				var value = ReflectionUtil.ConvertValue(sourceValue, sourceType, fd.Value);
 
 				if (value != null)
 				{
-					table.Fields.Add(fd.Key, value);
+					container.Fields.Add(fd.Key, value);
 				}
 			});
 		}

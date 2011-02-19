@@ -14,8 +14,8 @@ namespace DomainMappingConfiguration
 		/// <param name="mapperCore">The mapper core.</param>
 		public void ConfigureMapper(MapperCore mapperCore)
 		{
-			mapperCore.AddConfiguration<Table, object>(new TableToEntityMappingConfigurator());
-            mapperCore.AddConfiguration<object, Table>(new EntityToTableMappingConfigurator());
+			mapperCore.AddConfiguration<DataContainer, object>(new DataContainerToEntityMappingConfigurator());
+			mapperCore.AddConfiguration<object, DataContainer>(new EntityToDataContainerMappingConfigurator());
 		}
 	}
 }

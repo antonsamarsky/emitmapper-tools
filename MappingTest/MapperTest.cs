@@ -16,48 +16,27 @@ namespace MappingTest
 	[TestFixture]
 	public class MapperTest
 	{
-        /*
-        [Test]
-        public void _AnonymousToEntityTest()
-        {
-            var anonymousType = new
-            {
-                Id = Guid.NewGuid(),
-                Name = "Entity Name",
-                Number = 134567,
-                Price = 100.500m,
-            };
+		[Test]
+		public void _EntityChildToDataContainerTest()
+		{
+			var entityChild = new EntityChild
+			{
+				Id = Guid.NewGuid(),
+				Name = "Entity Name",
+				Number = 134567,
+				Price = 100.500m,
+				AdditionalValue = "Add"
+			};
+			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
+			var table = Mapper.Map<EntityChild, DataContainer>(entityChild);
 
-            Entity entity = Mapper.Map(anonymousType, new Entity());
-
-            Assert.AreEqual(anonymousType.Id, entity.Id);
-            Assert.AreEqual(anonymousType.Name, entity.Name);
-            Assert.AreEqual(anonymousType.Number, entity.Number);
-            Assert.AreEqual(anonymousType.Price, entity.Price);
-        }
-        */
-
-	    [Test]
-        public void _EntityChildToTableTest()
-        {
-            var entityChild = new EntityChild
-                                  {
-                                      Id = Guid.NewGuid(),
-                                      Name = "Entity Name",
-                                      Number = 134567,
-                                      Price = 100.500m,
-                                      AdditionalValue = "Add"
-                                  };
-            Mapper.DataMapper.Initialize(new DomainMappingInitializator());
-            var table = Mapper.Map<EntityChild, Table>(entityChild);
-
-            Assert.AreEqual(entityChild.Id.ToString(), table.Fields["order_id"]);
-            Assert.AreEqual(entityChild.Number, table.Fields["order_number"]);
-            Assert.AreEqual(entityChild.Number, table.Fields["order_number_2"]);
-            Assert.AreEqual(entityChild.Name, table.Fields["order_name"]);
-            Assert.AreEqual(entityChild.Price, table.Fields["order_price"]);
-            Assert.AreEqual(entityChild.AdditionalValue, table.Fields["AdditionalValue"]);
-        }
+			Assert.AreEqual(entityChild.Id.ToString(), table.Fields["order_id"]);
+			Assert.AreEqual(entityChild.Number, table.Fields["order_number"]);
+			Assert.AreEqual(entityChild.Number, table.Fields["order_number_2"]);
+			Assert.AreEqual(entityChild.Name, table.Fields["order_name"]);
+			Assert.AreEqual(entityChild.Price, table.Fields["order_price"]);
+			Assert.AreEqual(entityChild.AdditionalValue, table.Fields["AdditionalValue"]);
+		}
 
 		/// <summary>
 		/// Entities to entity mapping test.
@@ -116,7 +95,7 @@ namespace MappingTest
 		/// Entities to table mapping test.
 		/// </summary>
 		[Test]
-		public void _EntityToTableMappingTest()
+		public void _EntityToDataContainerMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -125,26 +104,27 @@ namespace MappingTest
 				Number = 134567,
 				Price = 100.500m,
 				UserName = string.Empty,
+				Time = DateTime.Now
 			};
 
 			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
-			var table = Mapper.Map<Entity, Table>(entity);
+			var container = Mapper.Map<Entity, DataContainer>(entity);
 
-			Assert.AreEqual(entity.Id.ToString(), table.Fields["order_id"]);
-			Assert.AreEqual(entity.Number, table.Fields["order_number"]);
-			Assert.AreEqual(entity.Number, table.Fields["order_number_2"]);
-			Assert.AreEqual(entity.Name, table.Fields["order_name"]);
-			Assert.AreEqual(entity.Price, table.Fields["order_price"]);
-			Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
+			Assert.AreEqual(entity.Id.ToString(), container.Fields["order_id"]);
+			Assert.AreEqual(entity.Number, container.Fields["order_number"]);
+			Assert.AreEqual(entity.Number, container.Fields["order_number_2"]);
+			Assert.AreEqual(entity.Name, container.Fields["order_name"]);
+			Assert.AreEqual(entity.Price, container.Fields["order_price"]);
+			Assert.AreEqual(entity.UserName, container.Fields["UserName"]);
 		}
 
 		/// <summary>
 		/// Tables to entity mapping test.
 		/// </summary>
 		[Test]
-		public void _TableToEntityMappingTest()
+		public void _DataContainerToEntityMappingTest()
 		{
-			var table = new Table
+			var container = new DataContainer
 			{
 				Fields = new Dictionary<string, object>
 				{
@@ -152,20 +132,21 @@ namespace MappingTest
 					{ "order_id", Guid.NewGuid().ToString() },
 					{ "order_number", 9345 },
 					{ "order_number_2", 9345 },
-					{ "order_price", 100.500m },
-					{ "UserName", "Peter" }
+					{ "order_price", decimal.MinValue },
+					{ "UserName", "Peter" },
+					{ "Time", DateTime.Now.ToString() }
 				}
 			};
 
 			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
-			var entity = Mapper.Map<Table, Entity>(table);
+			var entity = Mapper.Map<DataContainer, Entity>(container);
 
-			Assert.AreEqual(table.Fields["order_id"].ToString(), entity.Id.ToString());
-			Assert.AreEqual(table.Fields["order_number"], entity.Number);
-			Assert.AreEqual(table.Fields["order_number_2"], entity.Number);
-			Assert.AreEqual(table.Fields["order_name"], entity.Name);
-			Assert.AreEqual(table.Fields["order_price"], entity.Price);
-			Assert.AreEqual(table.Fields["UserName"], entity.UserName);
+			Assert.AreEqual(container.Fields["order_id"].ToString(), entity.Id.ToString());
+			Assert.AreEqual(container.Fields["order_number"], entity.Number);
+			Assert.AreEqual(container.Fields["order_number_2"], entity.Number);
+			Assert.AreEqual(container.Fields["order_name"], entity.Name);
+			Assert.AreEqual(container.Fields["order_price"], entity.Price);
+			Assert.AreEqual(container.Fields["UserName"], entity.UserName);
 		}
 
 		/// <summary>
@@ -214,9 +195,9 @@ namespace MappingTest
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
 		[TestCase(1000000)]
-		public void TableToEntityMappingCollectionTest(int capacity)
+		public void DataContainerToEntityMappingCollectionTest(int capacity)
 		{
-			var tables = Enumerable.Range(0, capacity).Select(i => new Table
+			var containers = Enumerable.Range(0, capacity).Select(i => new DataContainer
 			{
 				Fields = new Dictionary<string, object>
 				{
@@ -225,33 +206,34 @@ namespace MappingTest
 					{ "order_number", i },
 					{ "order_number_2", i },
 					{ "order_price", (decimal)Math.Sqrt(i) },
-					{ "UserName", "UserName_" + i }
+					{ "UserName", "UserName_" + i },
+					{ "Time", DateTime.Now.ToString() }
 				}
 			}).ToArray();
 
 			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 
 			// Cold mapping
-			Mapper.MapCollection<Table, Entity>(new List<Table> { new Table { Fields = new Dictionary<string, object>() } });
+			Mapper.MapCollection<DataContainer, Entity>(new List<DataContainer> { new DataContainer { Fields = new Dictionary<string, object>() } });
 
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
 			GC.Collect();
 
-			var entities = Mapper.MapCollection<Table, Entity>(tables).ToArray();
+			var entities = Mapper.MapCollection<DataContainer, Entity>(containers).ToArray();
 
 			stopWatch.Stop();
 			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
 
 			for (int i = 0; i < capacity; i++)
 			{
-				var table = tables[i];
+				var container = containers[i];
 				var entity = entities[i];
 
-				Assert.AreEqual(table.Fields["order_name"], entity.Name);
-				Assert.AreEqual(table.Fields["order_number"], entity.Number);
-				Assert.AreEqual(table.Fields["order_price"], entity.Price);
-				Assert.AreEqual(table.Fields["UserName"], entity.UserName);
+				Assert.AreEqual(container.Fields["order_name"], entity.Name);
+				Assert.AreEqual(container.Fields["order_number"], entity.Number);
+				Assert.AreEqual(container.Fields["order_price"], entity.Price);
+				Assert.AreEqual(container.Fields["UserName"], entity.UserName);
 			}
 		}
 
@@ -260,7 +242,7 @@ namespace MappingTest
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
 		[TestCase(1000000)]
-		public void EntityToTableMappingCollectionTest(int capacity)
+		public void EntityToDataContainerMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
 			{
@@ -269,32 +251,33 @@ namespace MappingTest
 				Name = "Name_" + i,
 				UserName = "UserName_" + i,
 				Price = (decimal)Math.Sqrt(i),
+				Time = DateTime.Now
 			}).ToArray();
 
 			Mapper.DataMapper.Initialize(new DomainMappingInitializator());
 
 			// Cold mapping
-			Mapper.MapCollection<Entity, Table>(new List<Entity> { new Entity() });
+			Mapper.MapCollection<Entity, DataContainer>(new List<Entity> { new Entity() });
 
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            GC.Collect();
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
 
-			var tables = Mapper.MapCollection<Entity, Table>(entities).ToArray();
+			var containers = Mapper.MapCollection<Entity, DataContainer>(entities).ToArray();
 
-            stopWatch.Stop();
-            Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
 
-            for (int i = 0; i < capacity; i++)
-            {
-                var table = tables[i];
-                var entity = entities[i];
+			for (int i = 0; i < capacity; i++)
+			{
+				var container = containers[i];
+				var entity = entities[i];
 
-                Assert.AreEqual(entity.Name, table.Fields["order_name"]);
-                Assert.AreEqual(entity.Number, table.Fields["order_number"]);
-                Assert.AreEqual(entity.Price, table.Fields["order_price"]);
-                Assert.AreEqual(entity.UserName, table.Fields["UserName"]);
-            }
+				Assert.AreEqual(entity.Name, container.Fields["order_name"]);
+				Assert.AreEqual(entity.Number, container.Fields["order_number"]);
+				Assert.AreEqual(entity.Price, container.Fields["order_price"]);
+				Assert.AreEqual(entity.UserName, container.Fields["UserName"]);
+			}
 		}
 	}
 }
