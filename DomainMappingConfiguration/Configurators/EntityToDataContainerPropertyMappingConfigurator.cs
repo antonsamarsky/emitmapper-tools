@@ -5,8 +5,6 @@ using System.Reflection;
 using Domain;
 using EmitMapper.MappingConfiguration;
 using EmitMapper.MappingConfiguration.MappingOperations;
-using EmitMapper.Utils;
-using MappingDefinitions;
 
 namespace DomainMappingConfiguration.Configurators
 {
@@ -43,9 +41,9 @@ namespace DomainMappingConfiguration.Configurators
 												return;
 											}
 
-											//var sourceType = ReflectionUtils.GetMemberType(sourceMember);
-											//var fieldsDescription = DataAttributeManager.GetDataMemberDefinition(sourceMember);
-											//ConvertSourcePropertyToFields(value, sourceType, (DataContainer)destination, fieldsDescription);
+											var sourceType = EmitMapper.Utils.ReflectionUtils.GetMemberType(sourceMember);
+											var fieldsDescription = ReflectionUtils.GetDataMemberDefinition(sourceMember);
+											ConvertSourcePropertyToFields(value, sourceType, (DataContainer)destination, (List<Tuple<string, Type>>) fieldsDescription);
 										}
 									})).ToArray();
 		}
