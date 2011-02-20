@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Domain;
 using EmitMapper.MappingConfiguration;
 using EmitMapper.MappingConfiguration.MappingOperations;
@@ -10,16 +8,11 @@ using MappingDefinitions;
 
 namespace DomainMappingConfiguration.Configurators
 {
+	/// <summary>
+	/// The data container to object configuration.
+	/// </summary>
 	public class DataContainerToObjectConfigurator : DefaultMapConfig
 	{
-		/// <summary>
-		/// Initializes a new instance of the <see cref="EntityToDataContainerPropertyMappingConfigurator"/> class.
-		/// </summary>
-		public DataContainerToObjectConfigurator()
-		{
-			ConstructBy(() => new DataContainer { Fields = new Dictionary<string, object>() });
-		}
-
 		/// <summary>
 		/// Gets the mapping operations.
 		/// </summary>
@@ -28,35 +21,30 @@ namespace DomainMappingConfiguration.Configurators
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			//this.FilterOperations(from, to, DataAttributeManager.GetTypeDataContainerDescription(to)
-			//                                 .Select(sourceMember => (IMappingOperation)new SrcReadOperation
-			//                                 {
-			//                                   Source = new MemberDescriptor(sourceMember),
-			//                                   Setter = (destination, value, state) =>
-			////            {
+			return this.FilterOperations(from, to, DataAttributeManager.GetTypeDataContainerDescription(to)
+									.Select(fieldsDescription =>
+									{
+										var fieldName = fieldsDescription.Key;
+										var destinationMember = fieldsDescription.Value.Item1;
+										var fieldType = fieldsDescription.Value.Item2;
+										return new DestWriteOperation
+											{
+												Destination = new MemberDescriptor(destinationMember),
+												Getter = (ValueGetter<object>)((item, state) =>
+												{
+													if (item == null || !(item is DataContainer))
+													{
+														return ValueToWrite<object>.Skip();
+													}
+													var container = item as DataContainer;
 
-			//                                   int i = 0;
-			//                                 })).ToArray();
+													var destinationType = ReflectionUtils.GetMemberType(destinationMember);
+													var destinationMemberValue = ReflectionUtil.ConvertValue(container.Fields[fieldName], fieldType, destinationType);
 
-			//this.FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(from)
-			//          .Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetGetMethod() != null)
-			//          .Select(sourceMember => (IMappingOperation)new SrcReadOperation
-			//          {
-			//            Source = new MemberDescriptor(sourceMember),
-			//            Setter = (destination, value, state) =>
-			//            {
-			//              if (destination == null || value == null || !(destination is DataContainer))
-			//              {
-			//                return;
-			//              }
-
-			//              var sourceType = sourceMember is PropertyInfo ? ((PropertyInfo) sourceMember).PropertyType : ((FieldInfo)sourceMember).FieldType;
-			//              var fieldsDescription = DataAttributeManager.GetDataMemberDefinition(sourceMember);
-			//              ConvertSourcePropertyToFields(value, sourceType, (DataContainer)destination, fieldsDescription);
-			//            }
-			//          })).ToArray();
-
-			return null;
+													return ValueToWrite<object>.ReturnValue(destinationMemberValue);
+												})
+											};
+									})).ToArray();
 		}
 	}
 }

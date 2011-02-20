@@ -13,30 +13,9 @@ namespace MappingDefinitions
 	public static class DataAttributeManager
 	{
 		/// <summary>
-		/// The collection of attributes values.
-		/// </summary>
-		private static readonly ConcurrentDictionary<MemberInfo, List<Tuple<string, Type>>> MemberFieldsDescription = new ConcurrentDictionary<MemberInfo, List<Tuple<string, Type>>>();
-
-		/// <summary>
 		/// The type data container description.
 		/// </summary>
 		private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<string, Tuple<MemberInfo, Type>>> TypeDataContainerDescriptions = new ConcurrentDictionary<Type, ConcurrentDictionary<string, Tuple<MemberInfo, Type>>>();
-
-		/// <summary>
-		/// Gets the fields description.
-		/// </summary>
-		/// <param name="memberInfo">The member info.</param>
-		/// <returns>
-		/// The fields description.
-		/// </returns>
-		public static List<Tuple<string, Type>> GetDataMemberDefinition(MemberInfo memberInfo)
-		{
-			return MemberFieldsDescription.GetOrAdd(memberInfo, mi => (from attribute in Attribute.GetCustomAttributes(mi, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
-																																 let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? mi.Name : attribute.FieldName
-																																 let memberType = mi is PropertyInfo ? ((PropertyInfo)mi).PropertyType : (mi is FieldInfo ? ((FieldInfo)mi).FieldType : null)
-																																 let fieldType = attribute.FieldType ?? memberType
-																																 select Tuple.Create(fieldName, fieldType)).ToList());
-		}
 
 		/// <summary>
 		/// Gets the type's data container.
@@ -73,6 +52,22 @@ namespace MappingDefinitions
 
 				return new ConcurrentDictionary<string, Tuple<MemberInfo, Type>>(fieldsDescription);
 			});
+		}
+
+		/// <summary>
+		/// Gets the fields description.
+		/// </summary>
+		/// <param name="memberInfo">The member info.</param>
+		/// <returns>
+		/// The fields description.
+		/// </returns>
+		private static IEnumerable<Tuple<string, Type>> GetDataMemberDefinition(MemberInfo memberInfo)
+		{
+			return from attribute in Attribute.GetCustomAttributes(memberInfo, typeof(DataMemberAttribute), true).Cast<DataMemberAttribute>()
+							let fieldName = string.IsNullOrEmpty(attribute.FieldName) ? memberInfo.Name : attribute.FieldName
+							let memberType = ReflectionUtils.GetMemberType(memberInfo)
+							let fieldType = attribute.FieldType ?? memberType
+							select Tuple.Create(fieldName, fieldType);
 		}
 	}
 }

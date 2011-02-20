@@ -43,9 +43,9 @@ namespace DomainMappingConfiguration.Configurators
 												return;
 											}
 
-											var sourceType = sourceMember is PropertyInfo ? ((PropertyInfo) sourceMember).PropertyType : ((FieldInfo)sourceMember).FieldType;
-											var fieldsDescription = DataAttributeManager.GetDataMemberDefinition(sourceMember);
-											ConvertSourcePropertyToFields(value, sourceType, (DataContainer)destination, fieldsDescription);
+											//var sourceType = ReflectionUtils.GetMemberType(sourceMember);
+											//var fieldsDescription = DataAttributeManager.GetDataMemberDefinition(sourceMember);
+											//ConvertSourcePropertyToFields(value, sourceType, (DataContainer)destination, fieldsDescription);
 										}
 									})).ToArray();
 		}

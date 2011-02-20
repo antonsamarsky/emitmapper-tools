@@ -10,7 +10,7 @@ using MappingDefinitions;
 namespace DomainMappingConfiguration.Configurators
 {
 	/// <summary>
-	/// The item configuration.
+	/// The data container to object configuration.
 	/// </summary>
 	public class DataContainerToEntityPropertyMappingConfigurator : DefaultMapConfig
 	{
@@ -33,12 +33,13 @@ namespace DomainMappingConfiguration.Configurators
 											{
 												return ValueToWrite<object>.Skip();
 											}
-											var destinationType = destinationMember is PropertyInfo ? ((PropertyInfo)destinationMember).PropertyType : ((FieldInfo)destinationMember).FieldType;
+											var destinationType = ReflectionUtils.GetMemberType(destinationMember);
 
-											var fieldDescription = DataAttributeManager.GetDataMemberDefinition(destinationMember);
-											var destinationMemberValue = ConvertFieldToDestinationProperty((DataContainer)item, destinationType, fieldDescription.FirstOrDefault());
+											//object fieldDescription = DataAttributeManager.GetDataMemberDefinition(destinationMember);
+											//var destinationMemberValue = ConvertFieldToDestinationProperty((DataContainer)item, destinationType, fieldDescription.FirstOrDefault());
 
-											return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
+											//return destinationMemberValue == null ? ValueToWrite<object>.Skip() : ValueToWrite<object>.ReturnValue(destinationMemberValue);
+											return ValueToWrite<object>.Skip();
 										})
 									})).ToArray();
 		}
