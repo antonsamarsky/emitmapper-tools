@@ -238,6 +238,52 @@ namespace MappingTest
 			}
 		}
 
+		[TestCase(1000000)]
+		public void HandWrittenDataContainerToEntityMappingCollectionTest(int capacity)
+		{
+			var containers = Enumerable.Range(0, capacity).Select(i => new DataContainer
+			{
+				Fields = new Dictionary<string, object>
+				{
+					{ "order_id", Guid.NewGuid().ToString() },
+					{ "order_name", "Name_" + i },
+					{ "order_number", i },
+					{ "order_number_2", i },
+					{ "order_price", (decimal)Math.Sqrt(i) },
+					{ "UserName", "UserName_" + i },
+					{ "Time", DateTime.Now.ToString() }
+				}
+			}).ToArray();
+
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+			GC.Collect();
+
+			var entities = containers.Select(d => new Entity
+			{
+				Id = Guid.Parse(d.Fields["order_id"].ToString()),
+				Name = d.Fields["order_name"].ToString(),
+				Number = int.Parse(d.Fields["order_number"].ToString()),
+				Price = decimal.Parse(d.Fields["order_price"].ToString()),
+				Time = DateTime.Parse(d.Fields["Time"].ToString()),
+				UserName = d.Fields["UserName"].ToString(),
+			}).ToArray();
+
+			stopWatch.Stop();
+			Console.WriteLine(string.Format("Handwritten mapping of the collection with {0} elements took: {1} ms. Approx. mapping time per object: {2} sec.", capacity, stopWatch.ElapsedMilliseconds, ((float)stopWatch.ElapsedMilliseconds) / capacity));
+
+			for (int i = 0; i < capacity; i++)
+			{
+				var container = containers[i];
+				var entity = entities[i];
+
+				Assert.AreEqual(container.Fields["order_name"], entity.Name);
+				Assert.AreEqual(container.Fields["order_number"], entity.Number);
+				Assert.AreEqual(container.Fields["order_price"], entity.Price);
+				Assert.AreEqual(container.Fields["UserName"], entity.UserName);
+			}
+		}
+
 		/// <summary>
 		/// Entities to table mapping collection test.
 		/// </summary>
