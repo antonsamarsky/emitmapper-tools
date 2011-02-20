@@ -18,7 +18,7 @@ namespace MappingTest
 	public class MapperTest
 	{
 		[Test]
-		public void _EntityChildToDataContainerTest()
+		public void EntityChildToDataContainerTest()
 		{
 			var entityChild = new EntityChild
 			{
@@ -43,7 +43,7 @@ namespace MappingTest
 		/// Entities to entity mapping test.
 		/// </summary>
 		[Test]
-		public void _EntityToEntityMappingTest()
+		public void EntityToEntityMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -65,7 +65,7 @@ namespace MappingTest
 		/// Entities to entity variants mapping test.
 		/// </summary>
 		[Test]
-		public void _EntityToEntityVariantsMappingTest()
+		public void EntityToEntityVariantsMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -96,7 +96,7 @@ namespace MappingTest
 		/// Entities to table mapping test.
 		/// </summary>
 		[Test]
-		public void _EntityToDataContainerMappingTest()
+		public void EntityToDataContainerMappingTest()
 		{
 			var entity = new Entity
 			{
@@ -123,7 +123,7 @@ namespace MappingTest
 		/// Tables to entity mapping test.
 		/// </summary>
 		[Test]
-		public void _DataContainerToEntityMappingTest()
+		public void DataContainerToEntityMappingTest()
 		{
 			var container = new DataContainer
 			{
@@ -154,7 +154,7 @@ namespace MappingTest
 		/// Entities to entity mapping collection test.
 		/// </summary>
 		/// <param name="capacity">The capacity.</param>
-		[TestCase(1000000)]
+		[TestCase(10000)]
 		public void EntityToEntityMappingCollectionTest(int capacity)
 		{
 			var entities = Enumerable.Range(0, capacity).Select(i => new Entity
@@ -286,7 +286,7 @@ namespace MappingTest
 		/// </summary>
 		/// <param name="numberOfThreads">The number of threads</param>
 		[TestCase(1000)]
-		public void ZConcurrentMappingTest(int numberOfThreads)
+		public void ConcurrentMappingTest(int numberOfThreads)
 		{
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
@@ -295,8 +295,8 @@ namespace MappingTest
 			var tasks = new List<Task>();
 			for (int i = 0; i < numberOfThreads; i++)
 			{
-				tasks.Add(Task.Factory.StartNew(_DataContainerToEntityMappingTest));
-				tasks.Add(Task.Factory.StartNew(_EntityToDataContainerMappingTest));
+				tasks.Add(Task.Factory.StartNew(DataContainerToEntityMappingTest));
+				tasks.Add(Task.Factory.StartNew(EntityToDataContainerMappingTest));
 				tasks.Add(Task.Factory.StartNew(() => EntityToDataContainerMappingCollectionTest(numberOfThreads)));
 				tasks.Add(Task.Factory.StartNew(() => DataContainerToEntityMappingCollectionTest(numberOfThreads)));
 			}

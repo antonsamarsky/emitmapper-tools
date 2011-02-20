@@ -4,15 +4,13 @@ using System.Linq;
 using Domain;
 using EmitMapper.MappingConfiguration;
 using EmitMapper.MappingConfiguration.MappingOperations;
-using EmitMapper.Utils;
-using MappingDefinitions;
 
 namespace DomainMappingConfiguration.Configurators
 {
 	/// <summary>
 	/// The object to data container configuration.
 	/// </summary>
-	public class ObjectToDataContainerConfigurator : DefaultMapConfig
+	public class ObjectToDataContainerConfigurator : MapConfigBase<ObjectToDataContainerConfigurator>
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ObjectToDataContainerConfigurator"/> class.
@@ -30,7 +28,7 @@ namespace DomainMappingConfiguration.Configurators
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			return this.FilterOperations(from, to, DataAttributeManager.GetTypeDataContainerDescription(from)
+			return this.FilterOperations(from, to, ReflectionUtils.GetTypeDataContainerDescription(from)
 									.Select(fieldsDescription =>
 									{
 										var fieldName = fieldsDescription.Key;
@@ -48,8 +46,8 @@ namespace DomainMappingConfiguration.Configurators
 
 													var container = destination as DataContainer;
 
-													var sourceType = ReflectionUtils.GetMemberType(sourceMember);
-													var destinationMemberValue = ReflectionUtil.ConvertValue(value, sourceType, fieldType);
+													var sourceType = EmitMapper.Utils.ReflectionUtils.GetMemberType(sourceMember);
+													var destinationMemberValue = ReflectionUtils.ConvertValue(value, sourceType, fieldType);
 
 													container.Fields.Add(fieldName, destinationMemberValue);
 												}

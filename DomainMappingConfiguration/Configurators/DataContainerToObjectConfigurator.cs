@@ -3,15 +3,13 @@ using System.Linq;
 using Domain;
 using EmitMapper.MappingConfiguration;
 using EmitMapper.MappingConfiguration.MappingOperations;
-using EmitMapper.Utils;
-using MappingDefinitions;
 
 namespace DomainMappingConfiguration.Configurators
 {
 	/// <summary>
 	/// The data container to object configuration.
 	/// </summary>
-	public class DataContainerToObjectConfigurator : DefaultMapConfig
+	public class DataContainerToObjectConfigurator : MapConfigBase<DataContainerToObjectConfigurator>
 	{
 		/// <summary>
 		/// Gets the mapping operations.
@@ -21,7 +19,7 @@ namespace DomainMappingConfiguration.Configurators
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			return this.FilterOperations(from, to, DataAttributeManager.GetTypeDataContainerDescription(to)
+			return this.FilterOperations(from, to, ReflectionUtils.GetTypeDataContainerDescription(to)
 									.Select(fieldsDescription =>
 									{
 										var fieldName = fieldsDescription.Key;
@@ -38,8 +36,8 @@ namespace DomainMappingConfiguration.Configurators
 													}
 													var container = item as DataContainer;
 
-													var destinationType = ReflectionUtils.GetMemberType(destinationMember);
-													var destinationMemberValue = ReflectionUtil.ConvertValue(container.Fields[fieldName], fieldType, destinationType);
+													var destinationType = EmitMapper.Utils.ReflectionUtils.GetMemberType(destinationMember);
+													var destinationMemberValue = ReflectionUtils.ConvertValue(container.Fields[fieldName], fieldType, destinationType);
 
 													return ValueToWrite<object>.ReturnValue(destinationMemberValue);
 												})

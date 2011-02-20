@@ -22,7 +22,7 @@ namespace DomainMappingConfiguration.Configurators
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			return this.FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(to)
+			return this.FilterOperations(from, to, EmitMapper.Utils.ReflectionUtils.GetPublicFieldsAndProperties(to)
 									.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetSetMethod() != null)
 									.Select(destinationMember => (IMappingOperation)new DestWriteOperation
 									{
@@ -33,7 +33,7 @@ namespace DomainMappingConfiguration.Configurators
 											{
 												return ValueToWrite<object>.Skip();
 											}
-											var destinationType = ReflectionUtils.GetMemberType(destinationMember);
+											var destinationType = EmitMapper.Utils.ReflectionUtils.GetMemberType(destinationMember);
 
 											//object fieldDescription = DataAttributeManager.GetDataMemberDefinition(destinationMember);
 											//var destinationMemberValue = ConvertFieldToDestinationProperty((DataContainer)item, destinationType, fieldDescription.FirstOrDefault());
@@ -67,7 +67,7 @@ namespace DomainMappingConfiguration.Configurators
 			}
 
 			var sourceType = fieldDescription.Item2 ?? sourceValue.GetType();
-			return ReflectionUtil.ConvertValue(sourceValue, sourceType, destinationType);
+			return ReflectionUtils.ConvertValue(sourceValue, sourceType, destinationType);
 		}
 	}
 }

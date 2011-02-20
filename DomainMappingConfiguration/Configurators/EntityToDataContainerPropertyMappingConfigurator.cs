@@ -31,7 +31,7 @@ namespace DomainMappingConfiguration.Configurators
 		/// <returns>The mapping operations.</returns>
 		public override IMappingOperation[] GetMappingOperations(Type from, Type to)
 		{
-			return this.FilterOperations(from, to, ReflectionUtils.GetPublicFieldsAndProperties(from)
+			return this.FilterOperations(from, to, EmitMapper.Utils.ReflectionUtils.GetPublicFieldsAndProperties(from)
 									.Where(member => (member.MemberType == MemberTypes.Field || member.MemberType == MemberTypes.Property) && ((PropertyInfo)member).GetGetMethod() != null)
 									.Select(sourceMember => (IMappingOperation)new SrcReadOperation
 									{
@@ -71,7 +71,7 @@ namespace DomainMappingConfiguration.Configurators
 					return;
 				}
 
-				var value = ReflectionUtil.ConvertValue(sourceValue, sourceType, fd.Item2);
+				var value = ReflectionUtils.ConvertValue(sourceValue, sourceType, fd.Item2);
 
 				if (value != null)
 				{
