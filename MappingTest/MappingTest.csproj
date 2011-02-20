@@ -54,6 +54,10 @@
       <Project>{99919BCA-1625-4FD3-B2D1-93728DCC74B7}</Project>
       <Name>Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MappingDefinitions\MappingDefinitions.csproj">
+      <Project>{58922259-52CB-413A-BF6B-DF511A48CFCD}</Project>
+      <Name>MappingDefinitions</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mapping\Mapping.csproj">
       <Project>{F0E1D2A6-DD9A-4643-B549-3BD96C89F833}</Project>
       <Name>Mapping</Name>

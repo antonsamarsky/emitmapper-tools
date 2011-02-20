@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configurators\DataContainerToObjectConfigurator.cs" />
     <Compile Include="DomainMappingInitializator.cs" />
     <Compile Include="Configurators\EntityToDataContainerPropertyMappingConfigurator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
