@@ -1,0 +1,445 @@
+﻿<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{03C53360-6930-4CAF-B4D9-349F1DAFFE6B}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EmitMapper.SL</RootNamespace>
+    <AssemblyName>EmitMapper.SL</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows" />
+    <Reference Include="mscorlib" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\EmitMapper\AST\CompilationContext.cs">
+      <Link>AST\CompilationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Helpers\AstBuildHelper.cs">
+      <Link>AST\Helpers\AstBuildHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Helpers\CompilationHelper.cs">
+      <Link>AST\Helpers\CompilationHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\ILCompilationException.cs">
+      <Link>AST\ILCompilationException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstAddr.cs">
+      <Link>AST\Interfaces\IAstAddr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstNode.cs">
+      <Link>AST\Interfaces\IAstNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstRef.cs">
+      <Link>AST\Interfaces\IAstRef.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstRefOrAddr.cs">
+      <Link>AST\Interfaces\IAstRefOrAddr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstRefOrValue.cs">
+      <Link>AST\Interfaces\IAstRefOrValue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstStackItem.cs">
+      <Link>AST\Interfaces\IAstStackItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Interfaces\IAstValue.cs">
+      <Link>AST\Interfaces\IAstValue.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstBox.cs">
+      <Link>AST\Nodes\AstBox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstCallMethod.cs">
+      <Link>AST\Nodes\AstCallMethod.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstCallMethodVoid.cs">
+      <Link>AST\Nodes\AstCallMethodVoid.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstCastClass.cs">
+      <Link>AST\Nodes\AstCastClass.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstComplexNode.cs">
+      <Link>AST\Nodes\AstComplexNode.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstConstantInt32.cs">
+      <Link>AST\Nodes\AstConstantInt32.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstConstantNull.cs">
+      <Link>AST\Nodes\AstConstantNull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstConstantString.cs">
+      <Link>AST\Nodes\AstConstantString.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstExceptionHandlingBlock.cs">
+      <Link>AST\Nodes\AstExceptionHandlingBlock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstExprEquals.cs">
+      <Link>AST\Nodes\AstExprEquals.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstExprIsNull.cs">
+      <Link>AST\Nodes\AstExprIsNull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstExprNot.cs">
+      <Link>AST\Nodes\AstExprNot.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstIf.cs">
+      <Link>AST\Nodes\AstIf.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstIfNull.cs">
+      <Link>AST\Nodes\AstIfNull.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstIfTernar.cs">
+      <Link>AST\Nodes\AstIfTernar.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstIndirectRead.cs">
+      <Link>AST\Nodes\AstIndirectRead.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstInitializeLocalVariable.cs">
+      <Link>AST\Nodes\AstInitializeLocalVariable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstNewNullable.cs">
+      <Link>AST\Nodes\AstNewNullable.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstNewObject.cs">
+      <Link>AST\Nodes\AstNewObject.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReadArgument.cs">
+      <Link>AST\Nodes\AstReadArgument.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReadArrayItem.cs">
+      <Link>AST\Nodes\AstReadArrayItem.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReadField.cs">
+      <Link>AST\Nodes\AstReadField.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReadLocal.cs">
+      <Link>AST\Nodes\AstReadLocal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReadProperty.cs">
+      <Link>AST\Nodes\AstReadProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReadThis.cs">
+      <Link>AST\Nodes\AstReadThis.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReturn.cs">
+      <Link>AST\Nodes\AstReturn.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstReturnVoid.cs">
+      <Link>AST\Nodes\AstReturnVoid.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstThrow.cs">
+      <Link>AST\Nodes\AstThrow.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstTypeof.cs">
+      <Link>AST\Nodes\AstTypeof.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstUnbox.cs">
+      <Link>AST\Nodes\AstUnbox.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstValueToAddr.cs">
+      <Link>AST\Nodes\AstValueToAddr.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstWriteField.cs">
+      <Link>AST\Nodes\AstWriteField.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstWriteLocal.cs">
+      <Link>AST\Nodes\AstWriteLocal.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\AST\Nodes\AstWriteProperty.cs">
+      <Link>AST\Nodes\AstWriteProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Conversion\ArraysConverter.cs">
+      <Link>Conversion\ArraysConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Conversion\EMConvert.cs">
+      <Link>Conversion\EMConvert.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Conversion\NativeConvert.cs">
+      <Link>Conversion\NativeConvert.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Conversion\NullableConverter.cs">
+      <Link>Conversion\NullableConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Conversion\StaticConvertersManager.cs">
+      <Link>Conversion\StaticConvertersManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\DynamicAssemblyManager.cs">
+      <Link>DynamicAssemblyManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitBuilders\BuilderUtils.cs">
+      <Link>EmitBuilders\BuilderUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitBuilders\CreateTargetInstanceBuilder.cs">
+      <Link>EmitBuilders\CreateTargetInstanceBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitBuilders\MappingBuilder.cs">
+      <Link>EmitBuilders\MappingBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitBuilders\MappingOperationsProcessor.cs">
+      <Link>EmitBuilders\MappingOperationsProcessor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvoker.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvoker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerAction_0.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerAction_0.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerAction_1.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerAction_1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerAction_2.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerAction_2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerAction_3.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerAction_3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerBase.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerFunc_0.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerFunc_0.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerFunc_1.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerFunc_1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerFunc_2.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerFunc_2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Delegates\DelegateInvokerFunc_3.cs">
+      <Link>EmitInvoker\Delegates\DelegateInvokerFunc_3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvoker.cs">
+      <Link>EmitInvoker\Methods\MethodInvoker.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerAction_0.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerAction_0.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerAction_1.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerAction_1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerAction_2.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerAction_2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerAction_3.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerAction_3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerBase.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerFunc_0.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerFunc_0.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerFunc_1.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerFunc_1.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerFunc_2.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerFunc_2.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitInvoker\Methods\MethodInvokerFunc_3.cs">
+      <Link>EmitInvoker\Methods\MethodInvokerFunc_3.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\EmitMapperException.cs">
+      <Link>EmitMapperException.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Mappers\CustomMapperImpl.cs">
+      <Link>Mapper\CustomMapperImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Mappers\MapperForClassImpl.cs">
+      <Link>Mapper\MapperForClassImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Mappers\MapperForCollectionImpl.cs">
+      <Link>Mapper\MapperForCollectionImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Mappers\MapperPrimitiveImpl.cs">
+      <Link>Mapper\MapperPrimitiveImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Mappers\ObjectsMapperBaseImpl.cs">
+      <Link>Mapper\ObjectsMapperBaseImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\CustomConverterDescriptor.cs">
+      <Link>MappingConfiguration\CustomConverterDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\CustomMapConfig.cs">
+      <Link>MappingConfiguration\CustomMapConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\DefaultCustomConverterProvider.cs">
+      <Link>MappingConfiguration\DefaultCustomConverterProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\DefaultMapConfig.cs">
+      <Link>MappingConfiguration\DefaultMapConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\ICustomConverter.cs">
+      <Link>MappingConfiguration\ICustomConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\ICustomConverterProvider.cs">
+      <Link>MappingConfiguration\ICustomConverterProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\IMappingConfigurator.cs">
+      <Link>MappingConfiguration\IMappingConfigurator.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MapConfigBase.cs">
+      <Link>MappingConfiguration\MapConfigBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MapConfigBaseImpl.cs">
+      <Link>MappingConfiguration\MapConfigBaseImpl.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\DestSrcReadOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\DestSrcReadOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\DestWriteOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\DestWriteOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IComplexOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IComplexOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IDestOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IDestOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IDestReadOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IDestReadOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IDestWriteOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IDestWriteOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IMappingOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IMappingOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IReadWriteOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IReadWriteOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\IRootMappingOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\IRootMappingOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\ISrcOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\ISrcOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\ISrcReadOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\ISrcReadOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\Interfaces\ISrcWriteOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\Interfaces\ISrcWriteOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\MappingOperationDelegates.cs">
+      <Link>MappingConfiguration\MappingOperations\MappingOperationDelegates.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\OperationsBlock.cs">
+      <Link>MappingConfiguration\MappingOperations\OperationsBlock.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\ReadWriteComplex.cs">
+      <Link>MappingConfiguration\MappingOperations\ReadWriteComplex.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\ReadWriteSimple.cs">
+      <Link>MappingConfiguration\MappingOperations\ReadWriteSimple.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\RootMappingOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\RootMappingOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MappingOperations\SrcReadOperation.cs">
+      <Link>MappingConfiguration\MappingOperations\SrcReadOperation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\MemberDescriptor.cs">
+      <Link>MappingConfiguration\MemberDescriptor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\MappingConfiguration\TypeList.cs">
+      <Link>MappingConfiguration\TypeList.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\ObjectsMapper.cs">
+      <Link>ObjectsMapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\ObjectMapperManager.cs">
+      <Link>ObjectMapperManager.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Utils\MiscUtils.cs">
+      <Link>Utils\MiscUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Utils\ReflectionUtils.cs">
+      <Link>Utils\ReflectionUtils.cs</Link>
+    </Compile>
+    <Compile Include="..\..\EmitMapper\Utils\ThreadSaveCache.cs">
+      <Link>Utils\ThreadSaveCache.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\SL.Specific\ApplicationException.cs">
+      <Link>SL.Specific\ApplicationException.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\ArrayList.cs">
+      <Link>SL.Specific\ArrayList.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\Comparer.cs">
+      <Link>SL.Specific\Comparer.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\Convert.cs">
+      <Link>SL.Specific\Convert.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\Environment.cs">
+      <Link>SL.Specific\Environment.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\ICloneable.cs">
+      <Link>SL.Specific\ICloneable.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\IFormatterConverter.cs">
+      <Link>SL.Specific\IFormatterConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\ISerializable.cs">
+      <Link>SL.Specific\ISerializable.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\SerializationInfo.cs">
+      <Link>SL.Specific\SerializationInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\SerializationInfoEnumerator.cs">
+      <Link>SL.Specific\SerializationInfoEnumerator.cs</Link>
+    </Compile>
+    <Compile Include="..\SL.Specific\HashSet.cs">
+      <Link>SL.Specific\HashSet.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v3.0\Microsoft.Silverlight.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+      <UserProperties ProjectLinkReference="1b6ab0c8-b8e2-47ac-89e8-8b029ea1bca2" ProjectLinkerExcludeFilter="\\?desktop(\\.*)?$;\\?silverlight(\\.*)?$;\.desktop;\.silverlight;\.xaml;^service references(\\.*)?$;\.clientconfig;^web references(\\.*)?$" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

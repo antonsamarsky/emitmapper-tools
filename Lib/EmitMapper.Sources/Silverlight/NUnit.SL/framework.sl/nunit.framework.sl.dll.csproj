@@ -1,0 +1,354 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{83DD7E12-A705-4DBA-9D71-09C8973D9382}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>
+    </ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>nunit.framework.sl</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <RootNamespace>NUnit.Framework</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <SignAssembly>false</SignAssembly>
+    <OldToolsVersion>2.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;DEBUG;NET_2_0;SILVERLIGHT</DefineConstants>
+    <DocumentationFile>bin\Debug\nunit.framework.sl.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1699</NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE;NET_2_0</DefineConstants>
+    <DocumentationFile>bin\Release\nunit.framework.sl.xml</DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>1699</NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CommonAssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\DelayedConstraint.cs">
+    </Compile>
+    <Compile Include="Constraints\FloatingPointNumerics.cs">
+    </Compile>
+    <Compile Include="Constraints\Tolerance.cs">
+    </Compile>
+    <Compile Include="Contains.cs">
+    </Compile>
+    <Compile Include="RepeatAttribute.cs">
+    </Compile>
+    <Compile Include="MaxTimeAttribute.cs">
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Assert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssertionException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="AssertionHelper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CategoryAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CollectionAssert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\BasicConstraints.cs">
+      <Link>Constraints\BasicConstraints.cs</Link>
+    </Compile>
+    <Compile Include="Constraints\BinaryOperations.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\CollectionConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\ComparisonConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\Constraint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\ConstraintBuilder.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\ConstraintExpressionBase.cs">
+    </Compile>
+    <Compile Include="Constraints\ConstraintFactory.cs">
+    </Compile>
+    <Compile Include="Constraints\ContainsConstraint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\EmptyConstraint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\EqualConstraint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\IResolveConstraint.cs">
+    </Compile>
+    <Compile Include="Constraints\MessageWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\MsgUtils.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\Numerics.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\PathConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\PrefixConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\PropertyConstraint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\ResolvableConstraintExpression.cs">
+    </Compile>
+    <Compile Include="Constraints\SameAsConstraint.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\SerializableConstraints.cs">
+    </Compile>
+    <Compile Include="Constraints\StringConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Constraints\ThrowsConstraint.cs">
+    </Compile>
+    <Compile Include="Constraints\TypeConstraints.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DescriptionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DirectoryAssert.cs">
+    </Compile>
+    <Compile Include="ExpectedExceptionAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ExplicitAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileAssert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="GlobalSettings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Has.cs">
+    </Compile>
+    <Compile Include="IExpectException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IgnoreAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IgnoreException.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IncludeExcludeAttributes.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Is.cs">
+    </Compile>
+    <Compile Include="JoinTypeAttributes.cs">
+    </Compile>
+    <Compile Include="PropertyAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SetCultureAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SetUICultureAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SetUpAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SetUpFixtureAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SpecialValue.cs">
+    </Compile>
+    <Compile Include="StringAssert.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SuccessException.cs">
+    </Compile>
+    <Compile Include="SuiteAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="List.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ListMapper.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestCaseSourceAttribute.cs">
+    </Compile>
+    <Compile Include="TearDownAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestFixtureAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestFixtureSetUpAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestFixtureTearDownAttribute.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Text.cs">
+    </Compile>
+    <Compile Include="TextMessageWriter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestCaseAttribute.cs">
+    </Compile>
+    <Compile Include="Constraints\DirectoryConstraints.cs">
+    </Compile>
+    <Compile Include="TestCaseData.cs">
+    </Compile>
+    <Compile Include="InconclusiveException.cs">
+    </Compile>
+    <Compile Include="Throws.cs">
+    </Compile>
+    <Compile Include="RequiredAddinAttribute.cs">
+    </Compile>
+    <Compile Include="ValuesAttribute.cs">
+    </Compile>
+    <Compile Include="RandomAttribute.cs">
+    </Compile>
+    <Compile Include="RangeAttribute.cs">
+    </Compile>
+    <Compile Include="Constraints\RangeConstraint.cs">
+    </Compile>
+    <Compile Include="Constraints\ConstraintOperators.cs">
+    </Compile>
+    <Compile Include="ITestCaseData.cs">
+    </Compile>
+    <Compile Include="Constraints\ConstraintExpression.cs">
+    </Compile>
+    <Compile Include="ValueSourceAttribute.cs">
+    </Compile>
+    <Compile Include="Constraints\AttributeConstraints.cs">
+    </Compile>
+    <Compile Include="Iz.cs">
+    </Compile>
+    <Compile Include="ThreadingAttributes.cs">
+    </Compile>
+    <Compile Include="Assume.cs">
+    </Compile>
+    <Compile Include="Randomizer.cs">
+    </Compile>
+    <Compile Include="TheoryAttribute.cs">
+    </Compile>
+    <Compile Include="DatapointAttributes.cs">
+    </Compile>
+    <Compile Include="Constraints\ComparisonAdapter.cs">
+    </Compile>
+    <Compile Include="Constraints\EqualityAdapter.cs">
+    </Compile>
+    <Compile Include="Constraints\NUnitComparer.cs">
+    </Compile>
+    <Compile Include="Constraints\NUnitEqualityComparer.cs">
+    </Compile>
+    <Compile Include="Constraints\PredicateConstraint.cs">
+    </Compile>
+    <Compile Include="..\..\SL.Specific\\HashSet.cs">
+      <Link>SL.Specific\HashSet.cs</Link>
+    </Compile>
+    <Compile Include="..\..\SL.Specific\Environment.cs">
+      <Link>SL.Specific\Environment.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SyntaxElements.txt">
+      <CustomToolNamespace>NUnitSyntaxGenerator</CustomToolNamespace>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="system, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0\system.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml, Version=2.0.5.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files\Reference Assemblies\Microsoft\Framework\Silverlight\v3.0\System.Xml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
